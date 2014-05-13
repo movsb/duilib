@@ -3,6 +3,10 @@
 
 #pragma once
 
+#include <mshtml.h>
+#include <atlconv.h>
+#include <atlcomcli.h>
+
 #include "Utils/WebBrowserEventHandler.h"
 #include <ExDisp.h>
 

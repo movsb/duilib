@@ -1,9 +1,7 @@
 #include "StdAfx.h"
 #include "UIWebBrowser.h"
-#include <atlconv.h>
-#include <atlcomcli.h>
 #include "../Utils/downloadmgr.h"
-#include <mshtml.h>
+
 
 DuiLib::CWebBrowserUI::CWebBrowserUI()
 : m_pWebBrowser2(NULL)
@@ -596,7 +594,8 @@ HRESULT DuiLib::CWebBrowserUI::SetProperty( IDispatch *pObj, LPOLESTR pName, VAR
 IDispatch* DuiLib::CWebBrowserUI::GetHtmlWindow()
 {
 	IDispatch* pDp =  NULL;
-	HRESULT hr;
+	//女孩不哭 注: 添加初始化
+	HRESULT hr = E_FAIL;
 	if (m_pWebBrowser2)
 		hr=m_pWebBrowser2->get_Document(&pDp);
 
