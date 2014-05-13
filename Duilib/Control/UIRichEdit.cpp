@@ -255,7 +255,8 @@ CTxtWinHost::~CTxtWinHost()
 
 BOOL CTxtWinHost::Init(CRichEditUI *re, const CREATESTRUCT *pcs)
 {
-    IUnknown *pUnk;
+	// 女孩不哭 注:添加赋初值
+    IUnknown *pUnk = nullptr;
     HRESULT hr;
 
     m_re = re;
@@ -303,7 +304,9 @@ BOOL CTxtWinHost::Init(CRichEditUI *re, const CREATESTRUCT *pcs)
     //if(FAILED(CreateTextServices(NULL, this, &pUnk)))
     //    goto err;
 
-	PCreateTextServices TextServicesProc;
+	// 女孩不哭 注:添加赋初值
+	//PCreateTextServices TextServicesProc;
+	PCreateTextServices TextServicesProc = nullptr;
 	HMODULE hmod = LoadLibrary(_T("msftedit.dll"));
 	if (hmod)
 	{
@@ -314,6 +317,8 @@ BOOL CTxtWinHost::Init(CRichEditUI *re, const CREATESTRUCT *pcs)
 	{
 		HRESULT hr = TextServicesProc(NULL, this, &pUnk);
 	}
+	// 女孩不哭 注:添加1行
+	if(!pUnk) goto err;
 
     hr = pUnk->QueryInterface(IID_ITextServices,(void **)&pserv);
 
@@ -2234,7 +2239,7 @@ LRESULT CRichEditUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, boo
 					// This is the first WM_CHAR message, 
 					// accumulate it if this is a LeadByte.  Otherwise, fall thru to
 					// regular WM_CHAR processing.
-					if ( IsDBCSLeadByte ( (WORD)wParam ) )
+					if ( IsDBCSLeadByte ( (BYTE)(WORD)wParam ) )
 					{
 						// save the Lead Byte and don't process this message
 						m_chLeadByte = (WORD)wParam << 8 ;
