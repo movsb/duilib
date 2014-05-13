@@ -36,6 +36,11 @@ namespace DuiLib
 		virtual LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
 
 		CPaintManagerUI m_PaintManager;
+		//女孩不哭 注:添加此函数方便
+		CPaintManagerUI* GetManager();
+		CControlUI* FindControl(POINT pt);
+		CControlUI* FindControl(LPCTSTR pstrName);
+
 		static LPBYTE m_lpResourceZIPBuffer;
 
 	public:
