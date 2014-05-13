@@ -28,6 +28,61 @@ public:
     virtual void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
     virtual CControlUI* GetParent() const;
 
+	// 女孩不哭 注:添加快捷转换到指定控件, 自定义的除外;
+	// 我明明是想要前身声明的, 但ListUI那里始终过不了, 居然还冒出来个const this, 大家都看不懂了
+	// 所以导致多了个friend; 本来应该在类外声明他们的, 是不是?
+	// 还好ControlUI没有private成员
+public:
+#define A(c)	friend class C##c##UI;  C##c##UI* To##c##UI() {return (C##c##UI*)this;}
+	A(Edit)
+	A(List)
+	A(Text)
+
+	A(Combo)
+	A(Label)
+	A(Flash)
+
+	A(Button)
+	A(Option)
+	A(Slider)
+
+	A(Control)
+	A(ActiveX)
+
+	A(ListItem)
+	A(Progress)
+	A(RichEdit)
+	A(CheckBox)
+	A(ComboBox)
+	A(DateTime)
+	A(TreeView)
+	A(TreeNode)
+
+	A(Container)
+	A(TabLayout)
+	A(ScrollBar)
+
+	A(ListHeader)
+	A(TileLayout)
+	A(WebBrowser)
+	
+	A(ChildLayout)
+	A(ListElement)
+
+	A(DialogLayout)
+
+	A(VerticalLayout)
+	A(ListHeaderItem)
+	
+	A(ListTextElement)
+
+	A(HorizontalLayout)
+	A(ListLabelLayout)
+
+	A(ListContainerElement)
+#undef A
+
+
     // 文本相关
     virtual CDuiString GetText() const;
     virtual void SetText(LPCTSTR pstrText);

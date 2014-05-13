@@ -850,6 +850,17 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
     else if( _tcscmp(pstrName, _T("shortcut")) == 0 ) SetShortcut(pstrValue[0]);
     else if( _tcscmp(pstrName, _T("menu")) == 0 ) SetContextMenuUsed(_tcscmp(pstrValue, _T("true")) == 0);
 	else if( _tcscmp(pstrName, _T("virtualwnd")) == 0 ) SetVirtualWnd(pstrValue);
+	else{
+		// 女孩不哭 注: 添加未知属性提醒
+#ifdef _DEBUG
+		CDuiString tmp;
+		tmp += _T("未知的属性!\n\n属性名: ");
+		tmp += pstrName;
+		tmp += _T("\n属性值: ");
+		tmp += pstrValue;
+		::MessageBox(GetManager()->GetPaintWindow(),tmp,_T("Warning"),MB_ICONEXCLAMATION);
+	}
+#endif
 }
 
 CControlUI* CControlUI::ApplyAttributeList(LPCTSTR pstrList)
