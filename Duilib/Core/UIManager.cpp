@@ -430,19 +430,22 @@ void CPaintManagerUI::SetTransparent(int nOpacity)
         PFUNCSETLAYEREDWINDOWATTR fSetLayeredWindowAttributes;
 
         HMODULE hUser32 = ::GetModuleHandle(_T("User32.dll"));
-        if (hUser32)
-        {
-            fSetLayeredWindowAttributes = 
-                (PFUNCSETLAYEREDWINDOWATTR)::GetProcAddress(hUser32, "SetLayeredWindowAttributes");
-            if( fSetLayeredWindowAttributes == NULL ) return;
-        }
+// 女孩不哭 注:可以忽略吗?后面直接使用了(最后一行) @[C]
+//         if (hUser32)
+//         {
+//             fSetLayeredWindowAttributes =
+//                 (PFUNCSETLAYEREDWINDOWATTR)::GetProcAddress(hUser32, "SetLayeredWindowAttributes");
+//             if( fSetLayeredWindowAttributes == NULL ) return;
+//         }
+
+		fSetLayeredWindowAttributes = (PFUNCSETLAYEREDWINDOWATTR)::GetProcAddress(hUser32, "SetLayeredWindowAttributes");
 
         DWORD dwStyle = ::GetWindowLong(m_hWndPaint, GWL_EXSTYLE);
         DWORD dwNewStyle = dwStyle;
         if( nOpacity >= 0 && nOpacity < 256 ) dwNewStyle |= WS_EX_LAYERED;
         else dwNewStyle &= ~WS_EX_LAYERED;
         if(dwStyle != dwNewStyle) ::SetWindowLong(m_hWndPaint, GWL_EXSTYLE, dwNewStyle);
-        fSetLayeredWindowAttributes(m_hWndPaint, 0, nOpacity, LWA_ALPHA);
+        fSetLayeredWindowAttributes(m_hWndPaint, 0, nOpacity, LWA_ALPHA); //[C]
     }
 }
 
@@ -1964,7 +1967,8 @@ void CPaintManagerUI::ReloadAllImages()
 {
     bool bRedraw = false;
     TImageInfo* data;
-    TImageInfo* pNewData;
+	// 女孩不哭 注:添加赋初值
+    TImageInfo* pNewData=nullptr;
     for( int i = 0; i< m_mImageHash.GetSize(); i++ ) {
         if(LPCTSTR bitmap = m_mImageHash.GetAt(i)) {
             data = static_cast<TImageInfo*>(m_mImageHash.Find(bitmap));
