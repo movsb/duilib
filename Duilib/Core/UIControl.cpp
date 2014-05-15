@@ -859,8 +859,8 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		tmp += _T("\nÊôÐÔÖµ: ");
 		tmp += pstrValue;
 		::MessageBox(GetManager()->GetPaintWindow(),tmp,_T("Warning"),MB_ICONEXCLAMATION);
-	}
 #endif
+	}
 }
 
 CControlUI* CControlUI::ApplyAttributeList(LPCTSTR pstrList)
