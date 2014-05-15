@@ -1,12 +1,21 @@
 #include "StdAfx.h"
 #include <zmouse.h>
 
+#include <GdiPlus.h>
+#pragma comment( lib, "GdiPlus.lib" )
+
 DECLARE_HANDLE(HZIP);	// An HZIP identifies a zip file that has been opened
 typedef DWORD ZRESULT;
 #define OpenZip OpenZipU
 #define CloseZip(hz) CloseZipU(hz)
 extern HZIP OpenZipU(void *z,unsigned int len,DWORD flags);
 extern ZRESULT CloseZipU(HZIP hz);
+
+//女孩不哭 注:GdiPlus定义
+// ULONG_PTR				CPaintManagerUI::m_gdiplusToken;
+// GdiplusStartupInput		CPaintManagerUI::m_gdiplusStartupInput;
+ULONG_PTR				g_gdiplusToken;
+GdiplusStartupInput		g_gdiplusStartupInput;
 
 namespace DuiLib {
 
@@ -63,7 +72,6 @@ short CPaintManagerUI::m_S = 100;
 short CPaintManagerUI::m_L = 100;
 CStdPtrArray CPaintManagerUI::m_aPreMessages;
 CStdPtrArray CPaintManagerUI::m_aPlugins;
-
 
 CPaintManagerUI::CPaintManagerUI() :
 m_hWndPaint(NULL),
@@ -315,6 +323,18 @@ bool CPaintManagerUI::LoadPlugin(LPCTSTR pstrModuleName)
 CStdPtrArray* CPaintManagerUI::GetPlugins()
 {
     return &m_aPlugins;
+}
+
+bool CPaintManagerUI::StartupGdiPlus()
+{
+	return ::GdiplusStartup(&g_gdiplusToken, &g_gdiplusStartupInput, nullptr)==Gdiplus::Ok;
+}
+
+bool CPaintManagerUI::ShutdownGdiPlus()
+{
+	::GdiplusShutdown(g_gdiplusToken);
+	g_gdiplusToken = 0;
+	return true;
 }
 
 HWND CPaintManagerUI::GetPaintWindow() const

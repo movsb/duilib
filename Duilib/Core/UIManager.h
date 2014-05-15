@@ -208,6 +208,9 @@ public:
     static void ReloadSkin();
     static bool LoadPlugin(LPCTSTR pstrModuleName);
     static CStdPtrArray* GetPlugins();
+	//女孩不哭 注: 把Gdiplus的初始化放到这里, 全局只初始化一次
+	static bool StartupGdiPlus();
+	static bool ShutdownGdiPlus();
 
     bool UseParentResource(CPaintManagerUI* pm);
     CPaintManagerUI* GetParentResource() const;
@@ -397,6 +400,10 @@ private:
     static short m_L;
     static CStdPtrArray m_aPreMessages;
     static CStdPtrArray m_aPlugins;
+
+	//女孩不哭 注:Gdiplus指针Token
+// 	static ULONG_PTR				m_gdiplusToken;
+// 	static GdiplusStartupInput		m_gdiplusStartupInput;
 
 public:
 	static CDuiString m_pStrDefaultFontName;

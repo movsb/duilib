@@ -41,8 +41,9 @@ namespace DuiLib
 
 		void		SetEnabledEffect(bool _EnabledEffect);
 		bool		GetEnabledEffect();
-		void		SetText(LPCTSTR pstrText);
-		CDuiString	GetText() const;
+//女孩不哭 注:没必要的重载
+// 		void		SetText(LPCTSTR pstrText);
+// 		CDuiString	GetText() const;
 		void		SetTransShadow(int _TransShadow);
 		int			GetTransShadow();
 		void		SetTransShadow1(int _TransShadow);
@@ -99,9 +100,11 @@ namespace DuiLib
 		DWORD					m_dwTextShadowColorB;
 		DWORD					m_dwStrokeColor;
 		RectF					m_ShadowOffset;
-		CDuiString				m_TextValue;
-		ULONG_PTR				m_gdiplusToken;
-		GdiplusStartupInput		m_gdiplusStartupInput;
+		//下面这个变量的用意完全未知
+		//CDuiString				m_TextValue;
+		//每个控件一个句柄,, 有必要?
+		//ULONG_PTR				m_gdiplusToken;
+		//GdiplusStartupInput		m_gdiplusStartupInput;
 		TextRenderingHint		m_TextRenderingHintAntiAlias;
 	};
 }

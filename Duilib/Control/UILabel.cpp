@@ -21,7 +21,7 @@ namespace DuiLib
 		m_bShowHtml(false),
 
 		m_EnableEffect(false),
-		m_gdiplusToken(0),
+		//m_gdiplusToken(0),
 		m_TextRenderingHintAntiAlias(TextRenderingHintSystemDefault),
 		m_TransShadow(60),
 		m_TransText(168),
@@ -43,7 +43,7 @@ namespace DuiLib
 		m_ShadowOffset.Y		= 0.0f;
 		m_ShadowOffset.Width	= 0.0f;
 		m_ShadowOffset.Height	= 0.0f;
-		GdiplusStartup( &m_gdiplusToken,&m_gdiplusStartupInput, NULL);
+		//GdiplusStartup( &m_gdiplusToken,&m_gdiplusStartupInput, NULL);
 
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
 	}
@@ -60,7 +60,7 @@ namespace DuiLib
 	{
 		try
 		{
-			GdiplusShutdown( m_gdiplusToken );
+			//GdiplusShutdown( m_gdiplusToken );
 		}
 		catch (...)
 		{
@@ -310,6 +310,16 @@ namespace DuiLib
 		}
 		else
 		{
+			//女孩不哭 注:检测gdip是否已经加载
+			extern ULONG_PTR g_gdiplusToken;
+			if(!g_gdiplusToken)
+			{
+#ifdef _DEBUG
+				::MessageBox(GetManager()->GetPaintWindow(),_T("GdiPlus未初始化!"),nullptr,MB_ICONEXCLAMATION);
+#endif // _DEBUG
+				return;
+			}
+
 			Font	nFont(hDC,m_pManager->GetFont(GetFont()));
 
 			Graphics nGraphics(hDC);
@@ -331,6 +341,9 @@ namespace DuiLib
 
 			LinearGradientBrush nLineGrBrushA(Point(GetGradientAngle(), 0),Point(0,nGradientLength),_MakeRGB(GetTransShadow(),GetTextShadowColorA()),_MakeRGB(GetTransShadow1(),GetTextShadowColorB() == -1?GetTextShadowColorA():GetTextShadowColorB()));
 			LinearGradientBrush nLineGrBrushB(Point(GetGradientAngle(), 0),Point(0,nGradientLength),_MakeRGB(GetTransText(),GetTextColor()),_MakeRGB(GetTransText1(),GetTextColor1() == -1?GetTextColor():GetTextColor1()));
+
+			//女孩不哭 注:m_TextValue已经被删除, 现在是临时的引用
+			CDuiString& m_TextValue = m_sText;
 
 			if(GetEnabledStroke() && GetStrokeColor() > 0)
 			{
@@ -531,20 +544,20 @@ namespace DuiLib
 	// Parameter: LPCTSTR pstrText
 	// Note:	  
 	//************************************
-	void CLabelUI::SetText( LPCTSTR pstrText )
-	{
-		try
-		{
-			if(!GetEnabledEffect())
-				return CControlUI::SetText(pstrText);
-
-			m_TextValue = pstrText;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetText";
-		}
-	}
+// 	void CLabelUI::SetText( LPCTSTR pstrText )
+// 	{
+// 		try
+// 		{
+// 			if(!GetEnabledEffect())
+// 				return CControlUI::SetText(pstrText);
+// 
+// 			m_TextValue = pstrText;
+// 		}
+// 		catch (...)
+// 		{
+// 			throw "CLabelUI::SetText";
+// 		}
+// 	}
 
 	//************************************
 	// Method:    GetText
@@ -554,19 +567,19 @@ namespace DuiLib
 	// Qualifier: const
 	// Note:	  
 	//************************************
-	CDuiString CLabelUI::GetText() const
-	{
-		try
-		{
-			if(!m_EnableEffect)
-				return CControlUI::GetText();
-			return m_TextValue;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetText";
-		}
-	}
+// 	CDuiString CLabelUI::GetText() const
+// 	{
+// 		try
+// 		{
+// 			if(!m_EnableEffect)
+// 				return CControlUI::GetText();
+// 			return m_TextValue;
+// 		}
+// 		catch (...)
+// 		{
+// 			throw "CLabelUI::GetText";
+// 		}
+// 	}
 
 	//************************************
 	// Method:    SetEnabledEffect
