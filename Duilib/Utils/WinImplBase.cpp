@@ -36,6 +36,21 @@ LRESULT WindowImplBase::ResponseDefaultKeyEvent(WPARAM wParam)
 	return FALSE;
 }
 
+CPaintManagerUI* WindowImplBase::GetManager()
+{
+	return &m_PaintManager;
+}
+
+CControlUI* WindowImplBase::FindControl(POINT pt)
+{
+	return m_PaintManager.FindControl(pt);
+}
+
+CControlUI* WindowImplBase::FindControl(LPCTSTR pstrName)
+{
+	return m_PaintManager.FindControl(pstrName);
+}
+
 UINT WindowImplBase::GetClassStyle() const
 {
 	return CS_DBLCLKS;
