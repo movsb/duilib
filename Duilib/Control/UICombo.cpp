@@ -823,7 +823,8 @@ void CComboUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
             m_ListInfo.uTextStyle |= DT_RIGHT;
         }
     }
-    if( _tcscmp(pstrName, _T("itemtextpadding")) == 0 ) {
+	// 女孩不哭 注: 原来少了个else, 导致重复判断+传递给父控件..... 父窗口不认子窗口属性
+    else if( _tcscmp(pstrName, _T("itemtextpadding")) == 0 ) {
         RECT rcTextPadding = { 0 };
         LPTSTR pstr = NULL;
         rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
