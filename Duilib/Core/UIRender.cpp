@@ -373,6 +373,26 @@ TImageInfo* CRenderEngine::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask
 	if (!pData)
 	{
 		//::MessageBox(0, _T("读取图片数据失败！"), _T("抓BUG"), MB_OK);
+		//女孩不哭 注: DEBUG下添加错误提示
+#ifdef _DEBUG
+		CDuiString file;
+		if(type == NULL){
+			file = CPaintManagerUI::GetResourcePath();
+			if(CPaintManagerUI::GetResourceZip().IsEmpty()){
+				file += bitmap.m_lpstr;
+			}
+			else{
+				file += CPaintManagerUI::GetResourceZip();
+				file += " | ";
+				file += bitmap.m_lpstr;
+			}
+		}
+		else{
+			if((int)bitmap.m_lpstr <= 0xFFFF) file.SmallFormat("%d", bitmap.m_lpstr);
+			else file = bitmap.m_lpstr;
+		}
+		::MessageBox(nullptr, file, _T("读取图片失败!"), MB_ICONERROR);
+#endif
 		return NULL;
 	}
 
