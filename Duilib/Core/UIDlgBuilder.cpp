@@ -407,6 +407,7 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
 			{
 #ifdef _DEBUG
 				DUITRACE(_T("未知控件:%s"),pstrClass);
+				::MessageBox(pManager?pManager->GetPaintWindow():nullptr, pstrClass, _T("未知控件"),MB_ICONERROR);
 #else
 				continue;
 #endif

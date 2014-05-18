@@ -854,11 +854,15 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		// 女孩不哭 注: 添加未知属性提醒
 #ifdef _DEBUG
 		CDuiString tmp;
+		if(GetName().GetLength()){
+			tmp += _T("控件名字: ");
+			tmp += _T(GetName());
+		}
 		tmp += _T("未知的属性!\n\n属性名: ");
 		tmp += pstrName;
 		tmp += _T("\n属性值: ");
 		tmp += pstrValue;
-		::MessageBox(GetManager()->GetPaintWindow(),tmp,_T("Warning"),MB_ICONEXCLAMATION);
+		::MessageBox(GetManager()?GetManager()->GetPaintWindow():nullptr,tmp,_T("Warning"),MB_ICONEXCLAMATION);
 #endif
 	}
 }
