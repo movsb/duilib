@@ -27,8 +27,7 @@ CSysButtonWnd::CSysButtonWnd()
 void CSysButtonWnd::Init(CSysButtonUI* pOwner)
 {
 	m_pOwner = pOwner;
-	CPaintManagerUI* p = m_pOwner->GetManager();
-	Create(m_pOwner->GetManager()->GetPaintWindow(),nullptr,WS_CHILD|WS_VISIBLE,0);
+	Create(m_pOwner->GetManager()->GetPaintWindow(),nullptr,m_pOwner->GetStyle(),m_pOwner->GetExStyle());
 
 	HFONT hFont=NULL;
 	int iFontIndex=m_pOwner->GetFont();
@@ -58,17 +57,16 @@ void CSysButtonWnd::OnFinalMessage(HWND hWnd)
 
 LRESULT CSysButtonWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if(uMsg < OCM__BASE){
-		switch(uMsg)
+	switch(uMsg)
+	{
+	case WM_CONTEXTMENU:
 		{
-		case WM_CONTEXTMENU:
-			{
-				if(m_pOwner->IsContextMenuUsed())
-					m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_MENU);
-				return 0;
-			}
+			if(m_pOwner->IsContextMenuUsed())
+				m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_MENU);
+			return 0;
 		}
 	}
+
 	if(uMsg >= OCM__BASE){
 		uMsg -= OCM__BASE;
 		TNotifyUI msg;
@@ -84,6 +82,9 @@ LRESULT CSysButtonWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				m_pOwner->GetManager()->SendNotify(msg);
 				return 0;
 			}
+		}
+		else if(uMsg == WM_CTLCOLORBTN){
+			return LRESULT(GetStockBrush(WHITE_BRUSH));
 		}
 		return 0;
 	}
@@ -106,11 +107,11 @@ CSysButtonUI::~CSysButtonUI()
 
 LPCTSTR CSysButtonUI::GetClass() const
 {
-	return _T("SysButtonUI");	
+	return SYSCTRL_BUTTON_UI;
 }
 LPVOID CSysButtonUI::GetInterface(LPCTSTR pstrName)
 {
-	if(_tcscmp(pstrName, _T("SysButton")) ==0 ) return this;
+	if(_tcscmp(pstrName, SYSCTRL_BUTTON) ==0 ) return this;
 	return __super::GetInterface(pstrName);
 }
 
@@ -141,10 +142,6 @@ void CSysButtonUI::SetPos(RECT rc)
 
 SIZE CSysButtonUI::EstimateSize(SIZE szAvailable)
 {
-// 	CDuiRect rc;
-// 	::GetWindowRect(*m_pWnd,&rc);
-// 	SIZE sz = {rc.GetWidth(),rc.GetHeight()};
-// 	return sz;	
 	if( m_cxyFixed.cy == 0 ) return CSize(m_cxyFixed.cx, m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 8);
 	return CControlUI::EstimateSize(szAvailable);
 }
@@ -199,6 +196,119 @@ void CSysButtonUI::SetText( LPCTSTR pstrText )
 	__super::SetText(pstrText);
 	if(m_pWnd) m_pWnd->SendMessage(WM_SETTEXT,0,LPARAM(pstrText));
 }
+
+DWORD CSysButtonUI::GetStyle()
+{
+	return WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON;
+}
+
+DWORD CSysButtonUI::GetExStyle()
+{
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+
+LPCTSTR CSysOptionUI::GetClass() const
+{
+	return SYSCTRL_OPTION_UI;
+}
+LPVOID CSysOptionUI::GetInterface(LPCTSTR pstrName)
+{
+	if(_tcscmp(pstrName, SYSCTRL_OPTION) ==0 ) return this;
+	return __super::GetInterface(pstrName);
+}
+
+UINT CSysOptionUI::GetControlFlags() const
+{
+	if( !IsEnabled() ) return CControlUI::GetControlFlags();
+
+	return UIFLAG_SETCURSOR | UIFLAG_TABSTOP;
+}
+
+DWORD CSysOptionUI::GetStyle()
+{
+	return WS_CHILD|WS_VISIBLE|BS_AUTORADIOBUTTON;
+}
+DWORD CSysOptionUI::GetExStyle()
+{
+	return 0;
+}
+
+void CSysOptionUI::SetAttribute( LPCTSTR pstrName, LPCTSTR pstrValue )
+{
+	return __super::SetAttribute(pstrName, pstrValue);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+LPCTSTR CSysCheckBoxUI::GetClass() const
+{
+	return SYSCTRL_CHECKBOX_UI;
+}
+LPVOID CSysCheckBoxUI::GetInterface(LPCTSTR pstrName)
+{
+	if(_tcscmp(pstrName, SYSCTRL_CHECKBOX) ==0 ) return this;
+	return __super::GetInterface(pstrName);
+}
+
+UINT CSysCheckBoxUI::GetControlFlags() const
+{
+	if( !IsEnabled() ) return CControlUI::GetControlFlags();
+
+	return UIFLAG_SETCURSOR | UIFLAG_TABSTOP;
+}
+
+DWORD CSysCheckBoxUI::GetStyle()
+{
+	return WS_CHILD|WS_VISIBLE|BS_CHECKBOX;
+}
+DWORD CSysCheckBoxUI::GetExStyle()
+{
+	return 0;
+}
+
+void CSysCheckBoxUI::SetAttribute( LPCTSTR pstrName, LPCTSTR pstrValue )
+{
+	return __super::SetAttribute(pstrName, pstrValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+// 
+// LPCTSTR CSysGroupBoxUI::GetClass() const
+// {
+// 	return SYSCTRL_GROUPBOX_UI;
+// }
+// LPVOID CSysGroupBoxUI::GetInterface(LPCTSTR pstrName)
+// {
+// 	if(_tcscmp(pstrName, SYSCTRL_GROUPBOX) ==0 ) return this;
+// 	return __super::GetInterface(pstrName);
+// }
+// 
+// UINT CSysGroupBoxUI::GetControlFlags() const
+// {
+// 	if( !IsEnabled() ) return CControlUI::GetControlFlags();
+// 
+// 	return UIFLAG_SETCURSOR | UIFLAG_TABSTOP;
+// }
+// 
+// DWORD CSysGroupBoxUI::GetStyle()
+// {
+// 	return WS_CHILD|WS_VISIBLE|BS_GROUPBOX;
+// }
+// DWORD CSysGroupBoxUI::GetExStyle()
+// {
+// 	return 0;
+// }
+// 
+// void CSysGroupBoxUI::SetAttribute( LPCTSTR pstrName, LPCTSTR pstrValue )
+// {
+// 	return __super::SetAttribute(pstrName, pstrValue);
+// }
 
 
 }
