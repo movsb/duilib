@@ -675,7 +675,8 @@ void CListUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
         if( _tcscmp(pstrValue, _T("true")) == 0 ) m_ListInfo.uTextStyle |= DT_END_ELLIPSIS;
         else m_ListInfo.uTextStyle &= ~DT_END_ELLIPSIS;
     }    
-    if( _tcscmp(pstrName, _T("itemtextpadding")) == 0 ) {
+	// 女孩不哭 注 2014-06-02 17:58:21 又少了一个else, ...
+    else if( _tcscmp(pstrName, _T("itemtextpadding")) == 0 ) {
         RECT rcTextPadding = { 0 };
         LPTSTR pstr = NULL;
         rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
