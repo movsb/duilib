@@ -19,8 +19,8 @@ public:
     LPVOID GetInterface(LPCTSTR pstrName);
     UINT GetControlFlags() const;
 
-    bool IsWantTab();
-    void SetWantTab(bool bWantTab = true);
+//     bool IsWantTab();
+//     void SetWantTab(bool bWantTab = true);
     bool IsWantReturn();
     void SetWantReturn(bool bWantReturn = true);
     bool IsWantCtrlReturn();
@@ -131,7 +131,7 @@ public:
 protected:
     CTxtWinHost* m_pTwh;
     bool m_bVScrollBarFixing;
-    bool m_bWantTab;
+//    bool m_bWantTab;
     bool m_bWantReturn;
     bool m_bWantCtrlReturn;
     bool m_bRich;

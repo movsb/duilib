@@ -7,6 +7,7 @@ m_pManager(NULL),
 m_pParent(NULL), 
 m_bUpdateNeeded(true),
 m_bMenuUsed(false),
+m_bWantTab(false),
 m_bVisible(true), 
 m_bInternVisible(true),
 m_bFocused(false),
@@ -490,6 +491,16 @@ void CControlUI::SetContextMenuUsed(bool bMenuUsed)
     m_bMenuUsed = bMenuUsed;
 }
 
+void CControlUI::SetWantTab(bool bWant)
+{
+	m_bWantTab = bWant;
+}
+
+bool CControlUI::IsWantTab() const
+{
+	return m_bWantTab;
+}
+
 const CDuiString& CControlUI::GetUserData()
 {
     return m_sUserData;
@@ -850,6 +861,7 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
     else if( _tcscmp(pstrName, _T("shortcut")) == 0 ) SetShortcut(pstrValue[0]);
     else if( _tcscmp(pstrName, _T("menu")) == 0 ) SetContextMenuUsed(_tcscmp(pstrValue, _T("true")) == 0);
 	else if( _tcscmp(pstrName, _T("virtualwnd")) == 0 ) SetVirtualWnd(pstrValue);
+	else if( _tcscmp(pstrName, _T("wanttab")) == 0)	SetWantTab(_tcscmp(pstrValue, _T("true"))== 0);
 	else{
 		// 女孩不哭 注: 添加未知属性提醒
 #ifdef _DEBUG

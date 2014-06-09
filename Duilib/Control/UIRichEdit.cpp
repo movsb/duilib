@@ -1027,11 +1027,11 @@ void CTxtWinHost::SetParaFormat(PARAFORMAT2 &p)
 //
 //
 
-CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantTab(true), m_bWantReturn(true), 
+CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantReturn(true), 
     m_bWantCtrlReturn(true), m_bRich(true), m_bReadOnly(false), m_bWordWrap(false), m_dwTextColor(0), m_iFont(-1), 
     m_iLimitText(cInitTextMax), m_lTwhStyle(ES_MULTILINE), m_bInited(false), m_chLeadByte(0)
 {
-
+	m_bWantTab = true;
 #ifndef _UNICODE
 	m_fAccumulateDBC =true;
 #else
@@ -1065,15 +1065,15 @@ UINT CRichEditUI::GetControlFlags() const
     return UIFLAG_SETCURSOR | UIFLAG_TABSTOP;
 }
 
-bool CRichEditUI::IsWantTab()
-{
-    return m_bWantTab;
-}
-
-void CRichEditUI::SetWantTab(bool bWantTab)
-{
-    m_bWantTab = bWantTab;
-}
+// bool CRichEditUI::IsWantTab()
+// {
+//     return m_bWantTab;
+// }
+// 
+// void CRichEditUI::SetWantTab(bool bWantTab)
+// {
+//     m_bWantTab = bWantTab;
+// }
 
 bool CRichEditUI::IsWantReturn()
 {

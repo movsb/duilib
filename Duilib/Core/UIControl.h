@@ -164,6 +164,10 @@ public:
     virtual bool IsContextMenuUsed() const;
     virtual void SetContextMenuUsed(bool bMenuUsed);
 
+	//TAB键 应该没必要virtual
+	virtual void SetWantTab(bool bWant = true);
+	virtual bool IsWantTab() const;
+
     // 用户属性
     virtual const CDuiString& GetUserData(); // 辅助函数，供用户使用
     virtual void SetUserData(LPCTSTR pstrText); // 辅助函数，供用户使用
@@ -231,6 +235,7 @@ protected:
     CDuiString m_sName;
     bool m_bUpdateNeeded;
     bool m_bMenuUsed;
+	bool m_bWantTab;
     RECT m_rcItem;
     RECT m_rcPadding;
     SIZE m_cXY;
