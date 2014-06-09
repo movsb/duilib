@@ -8,7 +8,8 @@ namespace DuiLib
 		, m_dwHotTextColor(0)
 		, m_dwPushedTextColor(0)
 		, m_dwFocusedTextColor(0)
-		,m_dwHotBkColor(0)
+		, m_dwHotBkColor(0)
+		, m_bHand(false)
 	{
 		m_uTextStyle = DT_SINGLELINE | DT_VCENTER | DT_CENTER;
 	}
@@ -26,7 +27,7 @@ namespace DuiLib
 
 	UINT CButtonUI::GetControlFlags() const
 	{
-		return (IsKeyboardEnabled() ? UIFLAG_TABSTOP : 0) | (IsEnabled() ? UIFLAG_SETCURSOR : 0);
+		return (IsKeyboardEnabled() ? UIFLAG_TABSTOP : 0) | (IsEnabled() ?  GetHandCursor() ? UIFLAG_SETCURSOR : 0 : 0);
 	}
 
 	void CButtonUI::DoEvent(TEventUI& event)
@@ -336,6 +337,7 @@ namespace DuiLib
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetFocusedTextColor(clrColor);
 		}
+		else if( _tcscmp(pstrName, _T("hand")) == 0) SetHandCursor(_tcscmp(pstrValue, _T("true"))==0);
 		else CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 
@@ -441,4 +443,15 @@ Label_ForeImage:
 			if( !DrawImage(hDC, (LPCTSTR)m_sForeImage) ) m_sForeImage.Empty();
 		}
 	}
+
+	void CButtonUI::SetHandCursor( bool bSet/*=true*/ )
+	{
+		m_bHand = bSet;
+	}
+
+	bool CButtonUI::GetHandCursor() const
+	{
+		return m_bHand;
+	}
+
 }

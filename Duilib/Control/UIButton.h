@@ -47,7 +47,11 @@ namespace DuiLib
 		void PaintText(HDC hDC);
 		void PaintStatusImage(HDC hDC);
 
+		void SetHandCursor(bool bSet=true);
+		bool GetHandCursor() const;
+
 	protected:
+		bool m_bHand;
 		UINT m_uButtonState;
 
 		DWORD m_dwHotBkColor;
