@@ -16,12 +16,14 @@ class CControlUI;
 typedef enum EVENTTYPE_UI
 {
     UIEVENT__FIRST = 1,
+
     UIEVENT__KEYBEGIN,
     UIEVENT_KEYDOWN,
     UIEVENT_KEYUP,
     UIEVENT_CHAR,
     UIEVENT_SYSKEY,
     UIEVENT__KEYEND,
+
     UIEVENT__MOUSEBEGIN,
     UIEVENT_MOUSEMOVE,
     UIEVENT_MOUSELEAVE,
@@ -29,11 +31,15 @@ typedef enum EVENTTYPE_UI
     UIEVENT_MOUSEHOVER,
     UIEVENT_BUTTONDOWN,
     UIEVENT_BUTTONUP,
+    UIEVENT_MBUTTONDOWN,
+    UIEVENT_MBUTTONUP,
     UIEVENT_RBUTTONDOWN,
+    UIEVENT_RBUTTONUP,
     UIEVENT_DBLCLICK,
     UIEVENT_CONTEXTMENU,
     UIEVENT_SCROLLWHEEL,
     UIEVENT__MOUSEEND,
+
     UIEVENT_KILLFOCUS,
     UIEVENT_SETFOCUS,
     UIEVENT_WINDOWSIZE,
@@ -41,6 +47,7 @@ typedef enum EVENTTYPE_UI
     UIEVENT_TIMER,
     UIEVENT_NOTIFY,
     UIEVENT_COMMAND,
+
     UIEVENT__LAST,
 };
 
@@ -280,6 +287,10 @@ public:
     void ReleaseCapture();
     bool IsCaptured();
 
+	// 女孩不哭 注: 添加控件鼠标捕捉
+    void SetCapturedUI(CControlUI* pCapture);
+    CControlUI* GetCapturedUI();
+
     bool AddNotifier(INotifyUI* pControl);
     bool RemoveNotifier(INotifyUI* pControl);   
     void SendNotify(TNotifyUI& Msg, bool bAsync = false);
@@ -347,7 +358,12 @@ private:
     CControlUI* m_pEventHover;
     CControlUI* m_pEventClick;
     CControlUI* m_pEventKey;
-    //
+	// 女孩不哭 注: 控件也应该像系统控件那样, 支持捕捉鼠标
+	// 如果不支持, 现状就像滚动条那样, 拖动的时候还能选中容器的hot item
+	// 这不符合常规设计
+	// 鼠标捕捉应该作用于所有的鼠标动作事件, 比如:不包含WM_MOUSELEAVE, 但包含WM_MOUSEMOVE
+    CControlUI* m_pCapturedUI;
+
     POINT m_ptLastMousePos;
     SIZE m_szMinWindow;
     SIZE m_szMaxWindow;

@@ -569,6 +569,7 @@ namespace DuiLib
 			}
 			else if( ::PtInRect(&m_rcThumb, event.ptMouse) ) {
 				m_uThumbState |= UISTATE_CAPTURED | UISTATE_PUSHED;
+				m_pManager->SetCapturedUI(this);
 				ptLastMouse = event.ptMouse;
 				m_nLastScrollPos = m_nScrollPos;
 			}
@@ -605,6 +606,7 @@ namespace DuiLib
 
 			if( (m_uThumbState & UISTATE_CAPTURED) != 0 ) {
 				m_uThumbState &= ~( UISTATE_CAPTURED | UISTATE_PUSHED );
+				m_pManager->SetCapturedUI(NULL);
 				Invalidate();
 			}
 			else if( (m_uButton1State & UISTATE_PUSHED) != 0 ) {

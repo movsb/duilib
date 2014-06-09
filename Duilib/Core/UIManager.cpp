@@ -88,6 +88,7 @@ m_pFocus(NULL),
 m_pEventHover(NULL),
 m_pEventClick(NULL),
 m_pEventKey(NULL),
+m_pCapturedUI(NULL),
 m_bFirstLayout(true),
 m_bFocusNeeded(false),
 m_bUpdateNeeded(false),
@@ -804,6 +805,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             CControlUI* pHover = FindControl(pt);
             if( pHover == NULL ) break;
+            if(m_pCapturedUI && m_pCapturedUI!=pHover) break;
             // Generate mouse hover event
             if( m_pEventHover != NULL ) {
                 TEventUI event = { 0 };
@@ -855,9 +857,18 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             // Generate the appropriate mouse messages
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             m_ptLastMousePos = pt;
+
+            TEventUI event = { 0 };
+            if(m_pCapturedUI){
+                event.pSender = m_pCapturedUI;
+                event.ptMouse = pt;
+                event.Type = UIEVENT_MOUSEMOVE;
+                m_pCapturedUI->Event(event);
+                break;
+            }
+
             CControlUI* pNewHover = FindControl(pt);
             if( pNewHover != NULL && pNewHover->GetManager() != this ) break;
-            TEventUI event = { 0 };
             event.ptMouse = pt;
             event.dwTimestamp = ::GetTickCount();
             if( pNewHover != m_pEventHover && m_pEventHover != NULL ) {
@@ -969,13 +980,39 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             m_pEventClick = pControl;
         }
         break;
+	case WM_RBUTTONUP:
+		{
+			ReleaseCapture();
+
+			POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+			m_ptLastMousePos = pt;
+			m_pEventClick = FindControl(pt);
+			if(m_pEventClick == NULL) break;
+			TEventUI event = { 0 };
+			event.Type = UIEVENT_RBUTTONUP;
+			event.pSender = m_pEventClick;
+			event.wParam = wParam;
+			event.lParam = lParam;
+			event.ptMouse = pt;
+			event.wKeyState = (WORD)wParam;
+			event.dwTimestamp = ::GetTickCount();
+			m_pEventClick->Event(event);
+			m_pEventClick = NULL;
+		}
+		break;
     case WM_CONTEXTMENU:
         {
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             ::ScreenToClient(m_hWndPaint, &pt);
-            m_ptLastMousePos = pt;
-            if( m_pEventClick == NULL ) break;
-            ReleaseCapture();
+			// 女孩不哭 注: 为什么要使用WM_RBUTTONDOWN的时候的控件??????
+			// 如果用户按下右键, 并且拖动, 那么 她们就 *不是* 同一个控件!!!
+            //m_ptLastMousePos = pt;
+            //if( m_pEventClick == NULL ) break;
+			m_pEventClick = FindControl(pt);
+			if(m_pEventClick == NULL) break;
+			// 女孩不哭 注: 为什么要在这里ReleaseCapture() ???
+			// 难道不该在 WM_RBUTTONUP 里面 Release???
+            // ReleaseCapture();
             TEventUI event = { 0 };
             event.Type = UIEVENT_CONTEXTMENU;
             event.pSender = m_pEventClick;
@@ -1415,6 +1452,16 @@ void CPaintManagerUI::ReleaseCapture()
 bool CPaintManagerUI::IsCaptured()
 {
     return m_bMouseCapture;
+}
+
+void CPaintManagerUI::SetCapturedUI(CControlUI* pCapture)
+{
+	m_pCapturedUI = pCapture;
+}
+
+CControlUI* CPaintManagerUI::GetCapturedUI()
+{
+	return m_pCapturedUI;
 }
 
 bool CPaintManagerUI::SetNextTabControl(bool bForward)
