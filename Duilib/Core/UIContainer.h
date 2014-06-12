@@ -21,7 +21,14 @@ public:
     virtual void RemoveAll() = 0;
 };
 
-
+//////////////////////////////////////////////////////////////////////////
+// 
+class IContainerSelectUI
+{
+public:
+	virtual void SelectionSetSelected(bool bSelect) = 0;
+	virtual bool SelectionIsSelected() = 0;
+};
 /////////////////////////////////////////////////////////////////////////////////////
 //
 class CScrollBarUI;
@@ -102,6 +109,10 @@ public:
     virtual CScrollBarUI* GetVerticalScrollBar() const;
     virtual CScrollBarUI* GetHorizontalScrollBar() const;
 
+	// 鼠标选块
+	void SetSelectionControl(CControlUI* pControl);
+	CControlUI* GetSelectionControl() const;
+
 protected:
     virtual void SetFloatPos(int iIndex);
     virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired);
@@ -117,6 +128,12 @@ protected:
 
     CScrollBarUI* m_pVerticalScrollBar;
     CScrollBarUI* m_pHorizontalScrollBar;
+
+	// 鼠标选块
+	CControlUI*		m_pSelection;
+	DWORD			m_dwState;
+	POINT			m_ptSelectionStart;
+
 };
 
 } // namespace DuiLib

@@ -191,6 +191,9 @@ public:
 
     virtual CControlUI* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags);
 
+	//Êó±ê²¶×½
+	bool SetCapture();
+
     void Invalidate();
     bool IsUpdateNeeded() const;
     void NeedUpdate();

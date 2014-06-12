@@ -1049,6 +1049,21 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             ::SendMessage(m_hWndPaint, WM_MOUSEMOVE, 0, (LPARAM) MAKELPARAM(m_ptLastMousePos.x, m_ptLastMousePos.y));
         }
         break;
+	case WM_CAPTURECHANGED:
+		{
+			if(m_pCapturedUI == NULL) break;
+			TEventUI e = {0};
+			e.Type = UIEVENT_LOSTCAPTURE;
+			e.wParam = wParam;
+			e.lParam = lParam;
+			e.pSender = m_pCapturedUI;
+			e.dwTimestamp = ::GetTickCount();
+			e.ptMouse = m_ptLastMousePos;
+			e.wKeyState = MapKeyState();
+			m_pCapturedUI->Event(e);
+			m_pCapturedUI = NULL;
+			break; // WM_CANCELMODE时系统会自动ReleaseCapture()
+		}
     case WM_CHAR:
         {
             if( m_pFocus == NULL ) break;
@@ -1457,9 +1472,11 @@ bool CPaintManagerUI::IsCaptured()
     return m_bMouseCapture;
 }
 
-void CPaintManagerUI::SetCapturedUI(CControlUI* pCapture)
+bool CPaintManagerUI::SetCapturedUI(CControlUI* pCapture)
 {
+	if(m_pCapturedUI) return false;
 	m_pCapturedUI = pCapture;
+	return true;
 }
 
 CControlUI* CPaintManagerUI::GetCapturedUI()

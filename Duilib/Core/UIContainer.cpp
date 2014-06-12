@@ -14,7 +14,9 @@ namespace DuiLib
 		m_bMouseChildEnabled(true),
 		m_pVerticalScrollBar(NULL),
 		m_pHorizontalScrollBar(NULL),
-		m_bScrollProcess(false)
+		m_bScrollProcess(false),
+		m_pSelection(NULL),
+		m_dwState(0)
 	{
 		::ZeroMemory(&m_rcInset, sizeof(m_rcInset));
 	}
@@ -301,6 +303,39 @@ namespace DuiLib
 				LineRight();
 				return;
 				}
+			}
+		}
+
+		if(event.Type == UIEVENT_BUTTONDOWN
+			|| event.Type == UIEVENT_RBUTTONDOWN
+			|| event.Type ==UIEVENT_MBUTTONDOWN){
+			if(!GetSelectionControl() || !GetManager()->SetCapturedUI(this))
+				return;
+			m_pSelection->SetVisible(true);
+			m_pSelection->SetPos(CDuiRect(event.ptMouse.x, event.ptMouse.y, 0, 0));
+			m_dwState |= UISTATE_CAPTURED;
+			m_ptSelectionStart = event.ptMouse;
+			return;
+		}
+		else if(event.Type == UIEVENT_LOSTCAPTURE){
+			m_dwState &= ~UISTATE_CAPTURED;
+			if(m_pSelection){
+				m_pSelection->SetVisible(false);
+			}
+			return;
+		}
+		else if(event.Type == UIEVENT_MOUSEMOVE){
+			if(m_dwState & UISTATE_CAPTURED){
+				CDuiRect rs(m_ptSelectionStart.x,m_ptSelectionStart.y, event.ptMouse.x, event.ptMouse.y);
+				rs.Normalize();
+				CDuiRect rp = event.pSender->GetPos();
+
+				CDuiRect t;
+				::IntersectRect(&t, &rs, &rp);
+
+				m_pSelection->SetPos(t);
+
+				return;
 			}
 		}
 		CControlUI::DoEvent(event);
@@ -904,5 +939,26 @@ namespace DuiLib
 		pSubControl=static_cast<CControlUI*>(GetManager()->FindSubControlByName(this,pstrSubControlName));
 		return pSubControl;
 	}
+
+	void CContainerUI::SetSelectionControl( CControlUI* pControl )
+	{
+		auto root = GetManager()->GetRoot()->ToContainerUI();
+		if(!pControl && m_pSelection){
+			// 不直接使用remove
+			root->m_items.Remove(root->GetItemIndex(m_pSelection));
+			delete m_pSelection;
+		}
+		m_pSelection = pControl;
+		if(m_pSelection){
+			m_pSelection->SetFloat(true);
+			root->Add(m_pSelection);
+		}
+	}
+
+	CControlUI* CContainerUI::GetSelectionControl() const
+	{
+		return m_pSelection;
+	}
+
 
 } // namespace DuiLib

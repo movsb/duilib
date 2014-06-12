@@ -38,6 +38,8 @@ typedef enum EVENTTYPE_UI
     UIEVENT_DBLCLICK,
     UIEVENT_CONTEXTMENU,
     UIEVENT_SCROLLWHEEL,
+	UIEVENT_MOUSEWHEEL = UIEVENT_SCROLLWHEEL,
+	UIEVENT_LOSTCAPTURE,
     UIEVENT__MOUSEEND,
 
     UIEVENT_KILLFOCUS,
@@ -288,7 +290,7 @@ public:
     bool IsCaptured();
 
 	// 女孩不哭 注: 添加控件鼠标捕捉
-    void SetCapturedUI(CControlUI* pCapture);
+    bool SetCapturedUI(CControlUI* pCapture);
     CControlUI* GetCapturedUI();
 
     bool AddNotifier(INotifyUI* pControl);

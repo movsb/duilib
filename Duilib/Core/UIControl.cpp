@@ -613,6 +613,15 @@ CControlUI* CControlUI::FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFl
     return Proc(this, pData);
 }
 
+bool CControlUI::SetCapture()
+{
+	if(m_pManager){
+		return m_pManager->SetCapturedUI(this);
+	}
+	return false;
+}
+
+
 void CControlUI::Invalidate()
 {
     if( !IsVisible() ) return;
