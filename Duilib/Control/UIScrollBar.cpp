@@ -533,11 +533,11 @@ namespace DuiLib
 		{
 			return;
 		}
-		if( event.Type == UIEVENT_KILLFOCUS ) 
+		else if( event.Type == UIEVENT_KILLFOCUS ) 
 		{
 			return;
 		}
-		if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK )
+		else if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK )
 		{
 			if( !IsEnabled() ) return;
 
@@ -569,7 +569,7 @@ namespace DuiLib
 			}
 			else if( ::PtInRect(&m_rcThumb, event.ptMouse) ) {
 				m_uThumbState |= UISTATE_CAPTURED | UISTATE_PUSHED;
-				m_pManager->SetCapturedUI(this);
+				SetCapture();
 				ptLastMouse = event.ptMouse;
 				m_nLastScrollPos = m_nScrollPos;
 			}
@@ -598,28 +598,22 @@ namespace DuiLib
 			if( m_pManager != NULL && m_pOwner == NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_SCROLL);
 			return;
 		}
-		if( event.Type == UIEVENT_BUTTONUP )
+		else if( event.Type == UIEVENT_BUTTONUP )
 		{
-			m_nScrollRepeatDelay = 0;
-			m_nLastScrollOffset = 0;
-			m_pManager->KillTimer(this, DEFAULT_TIMERID);
-
-			if( (m_uThumbState & UISTATE_CAPTURED) != 0 ) {
-				m_uThumbState &= ~( UISTATE_CAPTURED | UISTATE_PUSHED );
-				m_pManager->SetCapturedUI(NULL);
-				Invalidate();
-			}
-			else if( (m_uButton1State & UISTATE_PUSHED) != 0 ) {
-				m_uButton1State &= ~UISTATE_PUSHED;
-				Invalidate();
-			}
-			else if( (m_uButton2State & UISTATE_PUSHED) != 0 ) {
-				m_uButton2State &= ~UISTATE_PUSHED;
-				Invalidate();
-			}
 			return;
 		}
-		if( event.Type == UIEVENT_MOUSEMOVE )
+		else if( event.Type == UIEVENT_LOSTCAPTURE){
+			m_pManager->KillTimer(this, DEFAULT_TIMERID);
+
+			m_nScrollRepeatDelay = 0;
+			m_nLastScrollOffset = 0;
+
+			m_uThumbState   &= ~( UISTATE_CAPTURED | UISTATE_PUSHED );
+			m_uButton1State &= ~UISTATE_PUSHED;
+			m_uButton2State &= ~UISTATE_PUSHED;
+			return;
+		}
+		else if( event.Type == UIEVENT_MOUSEMOVE )
 		{
 			if( (m_uThumbState & UISTATE_CAPTURED) != 0 ) {
 				if( !m_bHorizontal ) {
@@ -655,11 +649,11 @@ namespace DuiLib
 			}
 			return;
 		}
-		if( event.Type == UIEVENT_CONTEXTMENU )
+		else if( event.Type == UIEVENT_CONTEXTMENU )
 		{
 			return;
 		}
-		if( event.Type == UIEVENT_TIMER && event.wParam == DEFAULT_TIMERID )
+		else if( event.Type == UIEVENT_TIMER && event.wParam == DEFAULT_TIMERID )
 		{
 			++m_nScrollRepeatDelay;
 			if( (m_uThumbState & UISTATE_CAPTURED) != 0 ) {
@@ -726,7 +720,7 @@ namespace DuiLib
 			if( m_pManager != NULL && m_pOwner == NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_SCROLL);
 			return;
 		}
-		if( event.Type == UIEVENT_MOUSEENTER )
+		else if( event.Type == UIEVENT_MOUSEENTER )
 		{
 			if( IsEnabled() ) {
 				m_uButton1State |= UISTATE_HOT;
@@ -736,7 +730,7 @@ namespace DuiLib
 			}
 			return;
 		}
-		if( event.Type == UIEVENT_MOUSELEAVE )
+		else if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			if( IsEnabled() ) {
 				m_uButton1State &= ~UISTATE_HOT;
