@@ -544,6 +544,7 @@ namespace DuiLib
 			m_nLastScrollOffset = 0;
 			m_nScrollRepeatDelay = 0;
 			m_pManager->SetTimer(this, DEFAULT_TIMERID, 50U);
+			SetCapture();
 
 			if( ::PtInRect(&m_rcButton1, event.ptMouse) ) {
 				m_uButton1State |= UISTATE_PUSHED;
@@ -569,7 +570,6 @@ namespace DuiLib
 			}
 			else if( ::PtInRect(&m_rcThumb, event.ptMouse) ) {
 				m_uThumbState |= UISTATE_CAPTURED | UISTATE_PUSHED;
-				SetCapture();
 				ptLastMouse = event.ptMouse;
 				m_nLastScrollPos = m_nScrollPos;
 			}
@@ -656,6 +656,11 @@ namespace DuiLib
 		else if( event.Type == UIEVENT_TIMER && event.wParam == DEFAULT_TIMERID )
 		{
 			++m_nScrollRepeatDelay;
+
+			POINT pt = { 0 };
+			::GetCursorPos(&pt);
+			::ScreenToClient(m_pManager->GetPaintWindow(), &pt);
+
 			if( (m_uThumbState & UISTATE_CAPTURED) != 0 ) {
 				if( !m_bHorizontal ) {
 					if( m_pOwner != NULL ) m_pOwner->SetScrollPos(CSize(m_pOwner->GetScrollPos().cx, \
@@ -671,31 +676,32 @@ namespace DuiLib
 			}
 			else if( (m_uButton1State & UISTATE_PUSHED) != 0 ) {
 				if( m_nScrollRepeatDelay <= 5 ) return;
-				if( !m_bHorizontal ) {
-					if( m_pOwner != NULL ) m_pOwner->LineUp(); 
-					else SetScrollPos(m_nScrollPos - m_nLineSize);
-				}
-				else {
-					if( m_pOwner != NULL ) m_pOwner->LineLeft(); 
-					else SetScrollPos(m_nScrollPos - m_nLineSize);
+				if(::PtInRect(&m_rcButton1, pt)){
+					if( !m_bHorizontal ) {
+						if( m_pOwner != NULL ) m_pOwner->LineUp(); 
+						else SetScrollPos(m_nScrollPos - m_nLineSize);
+					}
+					else {
+						if( m_pOwner != NULL ) m_pOwner->LineLeft(); 
+						else SetScrollPos(m_nScrollPos - m_nLineSize);
+					}
 				}
 			}
 			else if( (m_uButton2State & UISTATE_PUSHED) != 0 ) {
 				if( m_nScrollRepeatDelay <= 5 ) return;
-				if( !m_bHorizontal ) {
-					if( m_pOwner != NULL ) m_pOwner->LineDown(); 
-					else SetScrollPos(m_nScrollPos + m_nLineSize);
-				}
-				else {
-					if( m_pOwner != NULL ) m_pOwner->LineRight(); 
-					else SetScrollPos(m_nScrollPos + m_nLineSize);
+				if(::PtInRect(&m_rcButton2, pt)){
+					if( !m_bHorizontal ) {
+						if( m_pOwner != NULL ) m_pOwner->LineDown(); 
+						else SetScrollPos(m_nScrollPos + m_nLineSize);
+					}
+					else {
+						if( m_pOwner != NULL ) m_pOwner->LineRight(); 
+						else SetScrollPos(m_nScrollPos + m_nLineSize);
+					}
 				}
 			}
 			else {
 				if( m_nScrollRepeatDelay <= 5 ) return;
-				POINT pt = { 0 };
-				::GetCursorPos(&pt);
-				::ScreenToClient(m_pManager->GetPaintWindow(), &pt);
 				if( !m_bHorizontal ) {
 					if( pt.y < m_rcThumb.top ) {
 						if( m_pOwner != NULL ) m_pOwner->PageUp(); 
