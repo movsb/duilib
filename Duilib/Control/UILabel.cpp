@@ -43,29 +43,12 @@ namespace DuiLib
 		m_ShadowOffset.Y		= 0.0f;
 		m_ShadowOffset.Width	= 0.0f;
 		m_ShadowOffset.Height	= 0.0f;
-		//GdiplusStartup( &m_gdiplusToken,&m_gdiplusStartupInput, NULL);
 
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
 	}
 
-	//************************************
-	// Method:    ~CLabelUI
-	// FullName:  CLabelUI::~CLabelUI
-	// Access:    public 
-	// Returns:   
-	// Qualifier:
-	// Note:	  
-	//************************************
 	CLabelUI::~CLabelUI()
 	{
-		try
-		{
-			//GdiplusShutdown( m_gdiplusToken );
-		}
-		catch (...)
-		{
-			throw "CLabelUI::~CLabelUI";
-		}
 	}
 
 	LPCTSTR CLabelUI::GetClass() const
@@ -160,16 +143,16 @@ namespace DuiLib
 			m_bFocused = true;
 			return;
 		}
-		if( event.Type == UIEVENT_KILLFOCUS ) 
+		else if( event.Type == UIEVENT_KILLFOCUS ) 
 		{
 			m_bFocused = false;
 			return;
 		}
-		if( event.Type == UIEVENT_MOUSEENTER )
+		else if( event.Type == UIEVENT_MOUSEENTER )
 		{
 			// return;
 		}
-		if( event.Type == UIEVENT_MOUSELEAVE )
+		else if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			// return;
 		}
@@ -179,27 +162,27 @@ namespace DuiLib
 	void CLabelUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if( _tcscmp(pstrName, _T("align")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
+			if( !_tcscmp(pstrValue, _T("left")) ) {
 				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
 				m_uTextStyle |= DT_LEFT;
 			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
+			if( !_tcscmp(pstrValue, _T("center"))) {
 				m_uTextStyle &= ~(DT_LEFT | DT_RIGHT );
 				m_uTextStyle |= DT_CENTER;
 			}
-			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
+			if( !_tcscmp(pstrValue, _T("right")) ) {
 				m_uTextStyle &= ~(DT_LEFT | DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 				m_uTextStyle |= DT_RIGHT;
 			}
-			if( _tcsstr(pstrValue, _T("top")) != NULL ) {
+			if( !_tcscmp(pstrValue, _T("top")) ) {
 				m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER | DT_VCENTER);
 				m_uTextStyle |= (DT_TOP | DT_SINGLELINE);
 			}
-			if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
+			if( !_tcscmp(pstrValue, _T("vcenter")) ) {
 				m_uTextStyle &= ~(DT_TOP | DT_BOTTOM );			
 				m_uTextStyle |= (DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			}
-			if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
+			if( !_tcscmp(pstrValue, _T("bottom")) ) {
 				m_uTextStyle &= ~(DT_TOP | DT_VCENTER | DT_VCENTER);
 				m_uTextStyle |= (DT_BOTTOM | DT_SINGLELINE);
 			}
@@ -315,7 +298,7 @@ namespace DuiLib
 			if(!g_gdiplusToken)
 			{
 #ifdef _DEBUG
-				::MessageBox(GetManager()->GetPaintWindow(),_T("GdiPlus未初始化!"),nullptr,MB_ICONEXCLAMATION);
+				::MessageBox(GetManager()?GetManager()->GetPaintWindow():nullptr,_T("GdiPlus未初始化!"),nullptr,MB_ICONEXCLAMATION);
 #endif // _DEBUG
 				return;
 			}
@@ -393,725 +376,182 @@ namespace DuiLib
 		}
 	}
 
-	//************************************
-	// Method:    SetTransShadow
-	// FullName:  CLabelUI::SetTransShadow
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _TransShadow
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTransShadow( int _TransShadow )
 	{
-		try
-		{
-			m_TransShadow = _TransShadow;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTransShadow";
-		}
+		m_TransShadow = _TransShadow;
 	}
 
-	//************************************
-	// Method:    GetTransShadow
-	// FullName:  CLabelUI::GetTransShadow
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetTransShadow()
 	{
-		try
-		{
-			return m_TransShadow;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTransShadow";
-		}
+		return m_TransShadow;
 	}
 
-	//************************************
-	// Method:    SetTextRenderingHintAntiAlias
-	// FullName:  CLabelUI::SetTextRenderingHintAntiAlias
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _TextRenderingHintAntiAlias
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTextRenderingHintAntiAlias( int _TextRenderingHintAntiAlias )
 	{
-		try
-		{
-			if(_TextRenderingHintAntiAlias < 0 || _TextRenderingHintAntiAlias > 5)
-				_TextRenderingHintAntiAlias = 0;
-			m_TextRenderingHintAntiAlias = (TextRenderingHint)_TextRenderingHintAntiAlias;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTextRenderingHintAntiAlias";
-		}
+		if(_TextRenderingHintAntiAlias < 0 || _TextRenderingHintAntiAlias > 5)
+			_TextRenderingHintAntiAlias = 0;
+		m_TextRenderingHintAntiAlias = (TextRenderingHint)_TextRenderingHintAntiAlias;
 	}
 
-	//************************************
-	// Method:    GetTextRenderingHintAntiAlias
-	// FullName:  CLabelUI::GetTextRenderingHintAntiAlias
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetTextRenderingHintAntiAlias()
 	{
-		try
-		{
-			return m_TextRenderingHintAntiAlias;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTextRenderingHintAntiAlias";
-		}
+		return m_TextRenderingHintAntiAlias;
 	}
 
-	//************************************
-	// Method:    SetShadowOffset
-	// FullName:  CLabelUI::SetShadowOffset
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _offset
-	// Parameter: int _angle
-	// Note:	  
-	//************************************
 	void CLabelUI::SetShadowOffset( int _offset,int _angle )
 	{
-		try
-		{
-			if(_angle > 180 || _angle < -180)
-				return;
+		if(_angle > 180 || _angle < -180)
+			return;
 
-			RECT rc = m_rcItem;
+		RECT rc = m_rcItem;
 
-			if(_angle >= 0 && _angle <= 180)
-				rc.top -= _offset;
-			else if(_angle > -180 && _angle < 0)
-				rc.top += _offset;
+		if(_angle >= 0 && _angle <= 180)
+			rc.top -= _offset;
+		else if(_angle > -180 && _angle < 0)
+			rc.top += _offset;
 
-			if(_angle > -90 && _angle <= 90)
-				rc.left -= _offset;
-			else if( _angle > 90 || _angle < -90)
-				rc.left += _offset;
+		if(_angle > -90 && _angle <= 90)
+			rc.left -= _offset;
+		else if( _angle > 90 || _angle < -90)
+			rc.left += _offset;
 
-			m_ShadowOffset.X = (float)rc.top;
-			m_ShadowOffset.Y = (float)rc.left;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetShadowOffset";
-		}
+		m_ShadowOffset.X = (float)rc.top;
+		m_ShadowOffset.Y = (float)rc.left;
 	}
 
-	//************************************
-	// Method:    GetShadowOffset
-	// FullName:  CLabelUI::GetShadowOffset
-	// Access:    public 
-	// Returns:   RectF
-	// Qualifier:
-	// Note:	  
-	//************************************
 	RectF CLabelUI::GetShadowOffset()
 	{
-		try
-		{
-			return m_ShadowOffset;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetShadowOffset";
-		}
+		return m_ShadowOffset;
 	}
 
-	//************************************
-	// Method:    SetText
-	// FullName:  CLabelUI::SetText
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: LPCTSTR pstrText
-	// Note:	  
-	//************************************
-// 	void CLabelUI::SetText( LPCTSTR pstrText )
-// 	{
-// 		try
-// 		{
-// 			if(!GetEnabledEffect())
-// 				return CControlUI::SetText(pstrText);
-// 
-// 			m_TextValue = pstrText;
-// 		}
-// 		catch (...)
-// 		{
-// 			throw "CLabelUI::SetText";
-// 		}
-// 	}
-
-	//************************************
-	// Method:    GetText
-	// FullName:  CLabelUI::GetText
-	// Access:    public 
-	// Returns:   UiLib::CDuiString
-	// Qualifier: const
-	// Note:	  
-	//************************************
-// 	CDuiString CLabelUI::GetText() const
-// 	{
-// 		try
-// 		{
-// 			if(!m_EnableEffect)
-// 				return CControlUI::GetText();
-// 			return m_TextValue;
-// 		}
-// 		catch (...)
-// 		{
-// 			throw "CLabelUI::GetText";
-// 		}
-// 	}
-
-	//************************************
-	// Method:    SetEnabledEffect
-	// FullName:  CLabelUI::SetEnabledEffect
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: bool _EnabledEffect
-	// Note:	  
-	//************************************
 	void CLabelUI::SetEnabledEffect( bool _EnabledEffect )
 	{
-		try
-		{
-			m_EnableEffect = _EnabledEffect;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetEnabledEffect";
-		}
+		m_EnableEffect = _EnabledEffect;
 	}
 
-	//************************************
-	// Method:    GetEnabledEffect
-	// FullName:  CLabelUI::GetEnabledEffect
-	// Access:    public 
-	// Returns:   bool
-	// Qualifier:
-	// Note:	  
-	//************************************
 	bool CLabelUI::GetEnabledEffect()
 	{
-		try
-		{
-			return m_EnableEffect;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetEnabledEffect";
-		}
+		return m_EnableEffect;
 	}
 
-	//************************************
-	// Method:    SetTextColor1
-	// FullName:  CLabelUI::SetTextColor1
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: DWORD _TextColor1
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTextColor1( DWORD _TextColor1 )
 	{
-		try
-		{
-			m_dwTextColor1	= _TextColor1;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTextColor1";
-		}
+		m_dwTextColor1	= _TextColor1;
 	}
 
-	//************************************
-	// Method:    GetTextColor1
-	// FullName:  CLabelUI::GetTextColor1
-	// Access:    public 
-	// Returns:   DWORD
-	// Qualifier:
-	// Note:	  
-	//************************************
 	DWORD CLabelUI::GetTextColor1()
 	{
-		try
-		{
-			return m_dwTextColor1;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTextColor1";
-		}
+		return m_dwTextColor1;
 	}
 
-	//************************************
-	// Method:    SetTextShadowColorA
-	// FullName:  CLabelUI::SetTextShadowColorA
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: DWORD _TextShadowColorA
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTextShadowColorA( DWORD _TextShadowColorA )
 	{
-		try
-		{
-			m_dwTextShadowColorA	= _TextShadowColorA;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTextShadowColorA";
-		}
+		m_dwTextShadowColorA	= _TextShadowColorA;
 	}
 
-	//************************************
-	// Method:    GetTextShadowColorA
-	// FullName:  CLabelUI::GetTextShadowColorA
-	// Access:    public 
-	// Returns:   DWORD
-	// Qualifier:
-	// Note:	  
-	//************************************
 	DWORD CLabelUI::GetTextShadowColorA()
 	{
-		try
-		{
-			return m_dwTextShadowColorA;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTextShadowColorA";
-		}
+		return m_dwTextShadowColorA;
 	}
 
-	//************************************
-	// Method:    SetTextShadowColorB
-	// FullName:  CLabelUI::SetTextShadowColorB
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: DWORD _TextShadowColorB
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTextShadowColorB( DWORD _TextShadowColorB )
 	{
-		try
-		{
-			m_dwTextShadowColorB	= _TextShadowColorB;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTextShadowColorB";
-		}
+		m_dwTextShadowColorB	= _TextShadowColorB;
 	}
 
-	//************************************
-	// Method:    GetTextShadowColorB
-	// FullName:  CLabelUI::GetTextShadowColorB
-	// Access:    public 
-	// Returns:   DWORD
-	// Qualifier:
-	// Note:	  
-	//************************************
 	DWORD CLabelUI::GetTextShadowColorB()
 	{
-		try
-		{
-			return m_dwTextShadowColorB;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTextShadowColorB";
-		}
+		return m_dwTextShadowColorB;
 	}
 
-	//************************************
-	// Method:    SetTransText
-	// FullName:  CLabelUI::SetTransText
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _TransText
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTransText( int _TransText )
 	{
-		try
-		{
-			m_TransText = _TransText;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTransText";
-		}
+		m_TransText = _TransText;
 	}
 
-	//************************************
-	// Method:    GetTransText
-	// FullName:  CLabelUI::GetTransText
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetTransText()
 	{
-		try
-		{
-			return m_TransText;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTransText";
-		}
+		return m_TransText;
 	}
 
-	//************************************
-	// Method:    SetTransShadow1
-	// FullName:  CLabelUI::SetTransShadow1
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _TransShadow
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTransShadow1( int _TransShadow )
 	{
-		try
-		{
-			m_TransShadow1	= _TransShadow;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTransShadow1";
-		}
+		m_TransShadow1	= _TransShadow;
 	}
 
-	//************************************
-	// Method:    GetTransShadow1
-	// FullName:  CLabelUI::GetTransShadow1
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetTransShadow1()
 	{
-		try
-		{
-			return m_TransShadow1;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTransShadow1";
-		}
+		return m_TransShadow1;
 	}
 
-	//************************************
-	// Method:    SetTransText1
-	// FullName:  CLabelUI::SetTransText1
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _TransText
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTransText1( int _TransText )
 	{
-		try
-		{
-			m_TransText1	= _TransText;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTransText1";
-		}
+		m_TransText1	= _TransText;
 	}
 
-	//************************************
-	// Method:    GetTransText1
-	// FullName:  CLabelUI::GetTransText1
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetTransText1()
 	{
-		try
-		{
-			return m_TransText1;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTransText1";
-		}
+		return m_TransText1;
 	}
 
-	//************************************
-	// Method:    SetGradientAngle
-	// FullName:  CLabelUI::SetGradientAngle
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: float _SetGradientAngle
-	// Note:	  
-	//************************************
 	void CLabelUI::SetGradientAngle( int _SetGradientAngle )
 	{
-		try
-		{
-			m_GradientAngle	= _SetGradientAngle;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetGradientAngle";
-		}
+		m_GradientAngle	= _SetGradientAngle;
 	}
 
-	//************************************
-	// Method:    GetGradientAngle
-	// FullName:  CLabelUI::GetGradientAngle
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetGradientAngle()
 	{
-		try
-		{
-			return m_GradientAngle;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetGradientAngle";
-		}
+		return m_GradientAngle;
 	}
 
-	//************************************
-	// Method:    SetEnabledStroke
-	// FullName:  CLabelUI::SetEnabledStroke
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: bool _EnabledStroke
-	// Note:	  
-	//************************************
 	void CLabelUI::SetEnabledStroke( bool _EnabledStroke )
 	{
-		try
-		{
-			m_EnabledStroke = _EnabledStroke;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetEnabledStroke";
-		}
+		m_EnabledStroke = _EnabledStroke;
 	}
 
-	//************************************
-	// Method:    GetEnabledStroke
-	// FullName:  CLabelUI::GetEnabledStroke
-	// Access:    public 
-	// Returns:   bool
-	// Qualifier:
-	// Note:	  
-	//************************************
 	bool CLabelUI::GetEnabledStroke()
 	{
-		try
-		{
-			return m_EnabledStroke;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetEnabledStroke";
-		}
+		return m_EnabledStroke;
 	}
 
-	//************************************
-	// Method:    SetTransStroke
-	// FullName:  CLabelUI::SetTransStroke
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _TransStroke
-	// Note:	  
-	//************************************
 	void CLabelUI::SetTransStroke( int _TransStroke )
 	{
-		try
-		{
-			m_TransStroke = _TransStroke;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetTransStroke";
-		}
+		m_TransStroke = _TransStroke;
 	}
 
-	//************************************
-	// Method:    GetTransStroke
-	// FullName:  CLabelUI::GetTransStroke
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetTransStroke()
 	{
-		try
-		{
-			return m_TransStroke;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetTransStroke";
-		}
+		return m_TransStroke;
 	}
 
-	//************************************
-	// Method:    SetStrokeColor
-	// FullName:  CLabelUI::SetStrokeColor
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: DWORD _StrokeColor
-	// Note:	  
-	//************************************
 	void CLabelUI::SetStrokeColor( DWORD _StrokeColor )
 	{
-		try
-		{
-			m_dwStrokeColor = _StrokeColor;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetStrokeColor";
-		}
+		m_dwStrokeColor = _StrokeColor;
 	}
 
-	//************************************
-	// Method:    GetStrokeColor
-	// FullName:  CLabelUI::GetStrokeColor
-	// Access:    public 
-	// Returns:   DWORD
-	// Qualifier:
-	// Note:	  
-	//************************************
 	DWORD CLabelUI::GetStrokeColor()
 	{
-		try
-		{
-			return m_dwStrokeColor;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetStrokeColor";
-		}
+		return m_dwStrokeColor;
 	}
 
-	//************************************
-	// Method:    SetEnabledShadow
-	// FullName:  CLabelUI::SetEnabledShadow
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: bool _EnabledShadowe
-	// Note:	  
-	//************************************
 	void CLabelUI::SetEnabledShadow( bool _EnabledShadowe )
 	{
-		try
-		{
-			m_EnabledShadow = _EnabledShadowe;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetEnabledShadow";
-		}
+		m_EnabledShadow = _EnabledShadowe;
 	}
 
-	//************************************
-	// Method:    GetEnabledShadow
-	// FullName:  CLabelUI::GetEnabledShadow
-	// Access:    public 
-	// Returns:   bool
-	// Qualifier:
-	// Note:	  
-	//************************************
 	bool CLabelUI::GetEnabledShadow()
 	{
-		try
-		{
-			return m_EnabledShadow;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetEnabledShadow";
-		}
+		return m_EnabledShadow;
 	}
 
-	//************************************
-	// Method:    SetGradientLength
-	// FullName:  CLabelUI::SetGradientLength
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: int _GradientLength
-	// Note:	  
-	//************************************
 	void CLabelUI::SetGradientLength( int _GradientLength )
 	{
-		try
-		{
-			m_GradientLength	= _GradientLength;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::SetGradientLength";
-		}
+		m_GradientLength	= _GradientLength;
 	}
 
-	//************************************
-	// Method:    GetGradientLength
-	// FullName:  CLabelUI::GetGradientLength
-	// Access:    public 
-	// Returns:   int
-	// Qualifier:
-	// Note:	  
-	//************************************
 	int CLabelUI::GetGradientLength()
 	{
-		try
-		{
-			return m_GradientLength;
-		}
-		catch (...)
-		{
-			throw "CLabelUI::GetGradientLength";
-		}
+		return m_GradientLength;
 	}
-
 }
+
