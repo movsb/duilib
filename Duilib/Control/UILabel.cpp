@@ -2,6 +2,8 @@
 #include "UILabel.h"
 
 #include <atlconv.h>
+
+using namespace Gdiplus;
 namespace DuiLib
 {
 
@@ -303,7 +305,7 @@ namespace DuiLib
 				return;
 			}
 
-			Font	nFont(hDC,m_pManager->GetFont(GetFont()));
+			Gdiplus::Font	nFont(hDC,m_pManager->GetFont(GetFont()));
 
 			Graphics nGraphics(hDC);
 			nGraphics.SetTextRenderingHint(m_TextRenderingHintAntiAlias);

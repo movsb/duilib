@@ -5,9 +5,6 @@
 
 #include <GdiPlus.h>
 #pragma comment( lib, "GdiPlus.lib" )
-using namespace Gdiplus;
-class UILIB_API Gdiplus::RectF;
-struct UILIB_API Gdiplus::GdiplusStartupInput;
 
 namespace DuiLib
 {
@@ -59,7 +56,7 @@ namespace DuiLib
 		void		SetTextRenderingHintAntiAlias(int _TextRenderingHintAntiAlias);
 		int			GetTextRenderingHintAntiAlias();
 		void		SetShadowOffset(int _offset,int _angle);
-		RectF		GetShadowOffset();
+		Gdiplus::RectF		GetShadowOffset();
 		void		SetTextColor1(DWORD _TextColor1);
 		DWORD		GetTextColor1();
 		void		SetTextShadowColorA(DWORD _TextShadowColorA);
@@ -99,13 +96,8 @@ namespace DuiLib
 		DWORD					m_dwTextShadowColorA;
 		DWORD					m_dwTextShadowColorB;
 		DWORD					m_dwStrokeColor;
-		RectF					m_ShadowOffset;
-		//下面这个变量的用意完全未知
-		//CDuiString				m_TextValue;
-		//每个控件一个句柄,, 有必要?
-		//ULONG_PTR				m_gdiplusToken;
-		//GdiplusStartupInput		m_gdiplusStartupInput;
-		TextRenderingHint		m_TextRenderingHintAntiAlias;
+		Gdiplus::RectF					m_ShadowOffset;
+		Gdiplus::TextRenderingHint		m_TextRenderingHintAntiAlias;
 	};
 }
 

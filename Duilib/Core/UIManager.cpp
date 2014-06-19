@@ -15,7 +15,7 @@ extern ZRESULT CloseZipU(HZIP hz);
 // ULONG_PTR				CPaintManagerUI::m_gdiplusToken;
 // GdiplusStartupInput		CPaintManagerUI::m_gdiplusStartupInput;
 ULONG_PTR				g_gdiplusToken;
-GdiplusStartupInput		g_gdiplusStartupInput;
+Gdiplus::GdiplusStartupInput		g_gdiplusStartupInput;
 
 namespace DuiLib {
 
@@ -328,12 +328,12 @@ CStdPtrArray* CPaintManagerUI::GetPlugins()
 
 bool CPaintManagerUI::StartupGdiPlus()
 {
-	return ::GdiplusStartup(&g_gdiplusToken, &g_gdiplusStartupInput, nullptr)==Gdiplus::Ok;
+	return Gdiplus::GdiplusStartup(&g_gdiplusToken, &g_gdiplusStartupInput, nullptr)==Gdiplus::Ok;
 }
 
 bool CPaintManagerUI::ShutdownGdiPlus()
 {
-	::GdiplusShutdown(g_gdiplusToken);
+	Gdiplus::GdiplusShutdown(g_gdiplusToken);
 	g_gdiplusToken = 0;
 	return true;
 }
