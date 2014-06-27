@@ -1,5 +1,5 @@
 Bin/
 ipch/
 Output/
-Duilib.sdf
+/Duilib.*sdf
 编译说明.txt

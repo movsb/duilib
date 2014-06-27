@@ -35,3 +35,4 @@
 
 #include "SysCombo.h"
 #include "SysButton.h"
+#include "SysEdit.h"

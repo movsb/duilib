@@ -142,21 +142,17 @@ namespace DuiLib
 	{
 		if( event.Type == UIEVENT_SETFOCUS ) 
 		{
-			m_bFocused = true;
-			return;
+			if(_tcscmp(GetClass(), _T("LabelUI")) == 0){
+				m_bFocused = true;
+				return;
+			}
 		}
 		else if( event.Type == UIEVENT_KILLFOCUS ) 
 		{
-			m_bFocused = false;
-			return;
-		}
-		else if( event.Type == UIEVENT_MOUSEENTER )
-		{
-			// return;
-		}
-		else if( event.Type == UIEVENT_MOUSELEAVE )
-		{
-			// return;
+			if(_tcscmp(GetClass(), _T("LabelUI")) == 0){
+				m_bFocused = false;
+				return;
+			}
 		}
 		CControlUI::DoEvent(event);
 	}

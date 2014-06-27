@@ -905,6 +905,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             // when Win32 child windows are placed on the dialog
             // and we need to remove them on focus change).
             ::SetFocus(m_hWndPaint);
+			if(::GetCapture()) ::ReleaseCapture();
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             m_ptLastMousePos = pt;
             CControlUI* pControl = FindControl(pt);
@@ -948,7 +949,6 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             m_ptLastMousePos = pt;
             if( m_pEventClick == NULL ) break;
-            ReleaseCapture();
             TEventUI event = { 0 };
             event.Type = UIEVENT_BUTTONUP;
             event.pSender = m_pEventClick;
@@ -959,11 +959,13 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             event.dwTimestamp = ::GetTickCount();
             m_pEventClick->Event(event);
             m_pEventClick = NULL;
+			ReleaseCapture();
         }
         break;
     case WM_RBUTTONDOWN:
         {
             ::SetFocus(m_hWndPaint);
+			if(::GetCapture()) ::ReleaseCapture();
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             m_ptLastMousePos = pt;
             CControlUI* pControl = FindControl(pt);
@@ -985,12 +987,9 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
         break;
 	case WM_RBUTTONUP:
 		{
-			ReleaseCapture();
-
 			POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 			m_ptLastMousePos = pt;
-			m_pEventClick = FindControl(pt);
-			if(m_pEventClick == NULL) break;
+			if( m_pEventClick == NULL ) break;
 			TEventUI event = { 0 };
 			event.Type = UIEVENT_RBUTTONUP;
 			event.pSender = m_pEventClick;
@@ -1001,6 +1000,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
 			event.dwTimestamp = ::GetTickCount();
 			m_pEventClick->Event(event);
 			m_pEventClick = NULL;
+			ReleaseCapture();
 		}
 		break;
     case WM_CONTEXTMENU:
@@ -1321,10 +1321,17 @@ CControlUI* CPaintManagerUI::GetFocus() const
 void CPaintManagerUI::SetFocus(CControlUI* pControl)
 {
     // Paint manager window has focus?
-    HWND hFocusWnd = ::GetFocus();
-    if( hFocusWnd != m_hWndPaint && pControl != m_pFocus ) ::SetFocus(m_hWndPaint);
-    // Already has focus?
-    if( pControl == m_pFocus ) return;
+    // 这里的SetFocus有什么作用? 
+    // 如果UI含有窗口句柄的话会导致UI窗口句柄失去原有的焦点
+    // BUG: RichEdit待处理的消息是来自于主窗口, 也就是说如果此时子控件(含窗口句柄)有焦点
+    // 那么就算RichEdit得到焦点也不会有输入效果
+	
+	// Already has focus?
+	if( pControl == m_pFocus ) return;
+    
+	HWND hFocusWnd = ::GetFocus();
+	if( hFocusWnd != m_hWndPaint && !pControl->GetInterface("HWND")) ::SetFocus(m_hWndPaint);
+    
     // Remove focus from old control
     if( m_pFocus != NULL ) 
     {

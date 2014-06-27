@@ -38,14 +38,6 @@ namespace DuiLib
 			return;
 		}
 
-		if( event.Type == UIEVENT_SETFOCUS ) 
-		{
-			Invalidate();
-		}
-		if( event.Type == UIEVENT_KILLFOCUS ) 
-		{
-			Invalidate();
-		}
 		if( event.Type == UIEVENT_KEYDOWN )
 		{
 			if (IsKeyboardEnabled()) {
@@ -55,15 +47,16 @@ namespace DuiLib
 				}
 			}
 		}
-		if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK )
+		else if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK )
 		{
 			if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) {
+				SetCapture();
 				m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
 				Invalidate();
 			}
 			return;
 		}
-		if( event.Type == UIEVENT_MOUSEMOVE )
+		else if( event.Type == UIEVENT_MOUSEMOVE )
 		{
 			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
 				if( ::PtInRect(&m_rcItem, event.ptMouse) ) m_uButtonState |= UISTATE_PUSHED;
@@ -72,23 +65,27 @@ namespace DuiLib
 			}
 			return;
 		}
-		if( event.Type == UIEVENT_BUTTONUP )
+		else if(event.Type == UIEVENT_LOSTCAPTURE){
+			m_uButtonState &= ~(UISTATE_PUSHED | UISTATE_CAPTURED | UISTATE_HOT);
+			if(::PtInRect(&m_rcItem, event.ptMouse)) m_uButtonState |= UISTATE_HOT;
+			Invalidate();
+			return;
+		}
+		else if( event.Type == UIEVENT_BUTTONUP )
 		{
 			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
 				if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();
-				m_uButtonState &= ~(UISTATE_PUSHED | UISTATE_CAPTURED);
-				Invalidate();
 			}
 			return;
 		}
-		if( event.Type == UIEVENT_CONTEXTMENU )
+		else if( event.Type == UIEVENT_CONTEXTMENU )
 		{
 			if( IsContextMenuUsed() ) {
 				m_pManager->SendNotify(this, DUI_MSGTYPE_MENU, event.wParam, event.lParam);
 			}
 			return;
 		}
-		if( event.Type == UIEVENT_MOUSEENTER )
+		else if( event.Type == UIEVENT_MOUSEENTER )
 		{
 			if( IsEnabled() ) {
 				m_uButtonState |= UISTATE_HOT;
@@ -96,7 +93,7 @@ namespace DuiLib
 			}
 			// return;
 		}
-		if( event.Type == UIEVENT_MOUSELEAVE )
+		else if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			if( IsEnabled() ) {
 				m_uButtonState &= ~UISTATE_HOT;
@@ -104,7 +101,7 @@ namespace DuiLib
 			}
 			// return;
 		}
-		if( event.Type == UIEVENT_SETCURSOR ) {
+		else if( event.Type == UIEVENT_SETCURSOR ) {
 			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
 			return;
 		}

@@ -8,11 +8,11 @@ namespace DuiLib{
 #define SYSCTRL_OPTION		_T("SysOption")
 #define SYSCTRL_OPTION_UI	SYSCTRL_OPTION _T("UI")
 
-#define SYSCTRL_CHECKBOX	_T("SysCheckBox")
+#define SYSCTRL_CHECKBOX	_T("SysCheck")
 #define SYSCTRL_CHECKBOX_UI	SYSCTRL_CHECKBOX _T("UI")
 
-// #define SYSCTRL_GROUPBOX	_T("SysGroupBox")
-// #define SYSCTRL_GROUPBOX_UI	SYSCTRL_GROUPBOX _T("UI")
+//  #define SYSCTRL_GROUPBOX	_T("SysGroupBox")
+//  #define SYSCTRL_GROUPBOX_UI	SYSCTRL_GROUPBOX _T("UI")
 
 class CSysButtonWnd;
 
@@ -24,6 +24,7 @@ public:
 	~CSysButtonUI();
 
 	virtual LPCTSTR GetClass() const override;
+	static  LPCTSTR GetClassStatic() {return SYSCTRL_BUTTON_UI;}
 	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 	virtual UINT GetControlFlags() const override;
 	virtual DWORD GetStyle();
@@ -34,20 +35,17 @@ public:
 	int GetFont() const;
 
 	virtual void SetPos(RECT rc) override;
-	SIZE EstimateSize(SIZE szAvailable) override;
-
 	virtual void DoEvent(TEventUI& event) override;
 	virtual void DoInit() override;
 	virtual void SetEnabled(bool bEnable = true) override;
-	virtual bool IsEnabled() const override;
 	virtual void SetVisible(bool bVisible = true) override;
 
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
-
-public:
-
 	void SetText(LPCTSTR pstrText) override;
 
+protected:
+	virtual LRESULT CommandHandler(int code);
+	virtual LRESULT NotifyHandler(NMHDR* hdr);
 protected:
 	CSysButtonWnd* m_pWnd;
 
@@ -62,13 +60,27 @@ protected:
 class SYSCTRL_API CSysOptionUI : public CSysButtonUI
 {
 public:
+	CSysOptionUI();
 	virtual LPCTSTR GetClass() const override;
+	static LPCTSTR GetClassStatic() {return SYSCTRL_OPTION_UI;}
 	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
-	virtual UINT GetControlFlags() const override;
 	virtual DWORD GetStyle() override;
-	virtual DWORD GetExStyle() override;
+	virtual UINT GetControlFlags() const override;
 
+	LPCTSTR GetGroup() const;
+	void SetGroup(LPCTSTR pStrGroupName = NULL);
+	bool IsSelected() const;
+	virtual void Selected();
+
+	virtual void DoInit() override;
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+
+protected:
+	virtual LRESULT CommandHandler(int code);
+
+protected:
+	CDuiString		m_sGroupName;
+	bool			m_bSelected;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,29 +90,23 @@ public:
 class SYSCTRL_API CSysCheckBoxUI : public CSysButtonUI
 {
 public:
+	CSysCheckBoxUI();
 	virtual LPCTSTR GetClass() const override;
+	static LPCTSTR GetClassStatic() {return SYSCTRL_CHECKBOX_UI;}
 	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
-	virtual UINT GetControlFlags() const override;
 	virtual DWORD GetStyle() override;
-	virtual DWORD GetExStyle() override;
+
+	bool IsChecked();
+	void SetCheck(bool bChecked);
 
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+
+protected:
+	virtual LRESULT CommandHandler(int code);
+
+protected:
+	bool m_bAutoCheck;
+	bool m_bInitCheck;
 };
-
-////////////////////////////////////////////////////////////////////////
-//SysGroupBox
-////////////////////////////////////////////////////////////////////////
-
-// class SYSCTRL_API CSysGroupBoxUI : public CSysButtonUI
-// {
-// public:
-// 	virtual LPCTSTR GetClass() const override;
-// 	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
-// 	virtual UINT GetControlFlags() const override;
-// 	virtual DWORD GetStyle() override;
-// 	virtual DWORD GetExStyle() override;
-// 
-// 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
-// };
 
 }

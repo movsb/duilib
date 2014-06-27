@@ -175,7 +175,8 @@ defproc:
 	LPVOID CSysEditUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcscmp(pstrName, SYSCTRL_EDIT) == 0 ) return static_cast<CSysEditUI*>(this);
-		return __super::GetInterface(pstrName);
+		else if(_tcscmp(pstrName, _T("HWND"))==0) return m_pWindow->GetHWND();
+		else return __super::GetInterface(pstrName);
 	}
 
 	UINT CSysEditUI::GetControlFlags() const
@@ -347,7 +348,8 @@ defproc:
 		}
 
 		if(event.Type == UIEVENT_SETFOCUS){
-			::SetFocus(*m_pWindow);
+			if(::GetFocus() != *m_pWindow)
+				::SetFocus(*m_pWindow);
 		}
 
 		__super::DoEvent(event);
