@@ -76,7 +76,7 @@ CControlUI* WindowImplBase::CreateControl(LPCTSTR pstrClass)
 	return NULL;
 }
 
-LRESULT WindowImplBase::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam*/, bool& /*bHandled*/)
+LRESULT WindowImplBase::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam*/, bool& bHandled)
 {
 	if (uMsg == WM_KEYDOWN)
 	{
@@ -84,7 +84,8 @@ LRESULT WindowImplBase::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam
 		{
 		case VK_RETURN:
 		case VK_ESCAPE:
-			return ResponseDefaultKeyEvent(wParam);
+			bHandled = !!ResponseDefaultKeyEvent(wParam);
+			return 0;
 		default:
 			break;
 		}
