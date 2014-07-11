@@ -1330,7 +1330,7 @@ void CPaintManagerUI::SetFocus(CControlUI* pControl)
 	if( pControl == m_pFocus ) return;
     
 	HWND hFocusWnd = ::GetFocus();
-	if( hFocusWnd != m_hWndPaint && (!pControl || !pControl->GetInterface("HWND"))) 
+	if( hFocusWnd != m_hWndPaint && (!pControl || !pControl->GetInterface(_T("HWND")))) 
 		::SetFocus(m_hWndPaint);
     
     // Remove focus from old control

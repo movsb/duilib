@@ -388,7 +388,7 @@ TImageInfo* CRenderEngine::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask
 			}
 		}
 		else{
-			if((int)bitmap.m_lpstr <= 0xFFFF) file.SmallFormat("%d", bitmap.m_lpstr);
+			if((int)bitmap.m_lpstr <= 0xFFFF) file.SmallFormat(_T("%d"), bitmap.m_lpstr);
 			else file = bitmap.m_lpstr;
 		}
 		::MessageBox(nullptr, file, _T("¶ÁÈ¡Í¼Æ¬Ê§°Ü!"), MB_ICONERROR);

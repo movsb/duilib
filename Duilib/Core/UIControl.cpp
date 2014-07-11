@@ -878,7 +878,7 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		tmp += _T("未知的属性!\n");
 		if(GetName().GetLength()){
 			tmp += _T("\n控件名字: ");
-			tmp += _T(GetName());
+			tmp += GetName();
 		}
 		tmp += _T("\n控件类别: ");
 		tmp += GetClass();
