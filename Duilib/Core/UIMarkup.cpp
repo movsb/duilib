@@ -574,7 +574,8 @@ void CMarkup::_SkipIdentifier(LPTSTR& pstr) const
 bool CMarkup::_ParseAttributes(LPTSTR& pstrText)
 {   
     if( *pstrText == _T('>') ) return true;
-    *pstrText++ = _T('\0');
+    if(*pstrText>=_T('\0') && *pstrText<=_T(' '))
+        *pstrText++ = _T('\0');
     _SkipWhitespace(pstrText);
     while( *pstrText != _T('\0') && *pstrText != _T('>') && *pstrText != _T('/') ) {
         _SkipIdentifier(pstrText);
