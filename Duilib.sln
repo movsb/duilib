@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 13.00
+# Visual Studio 2013
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Duilib", "Duilib\Duilib.vcxproj", "{7D419328-2580-4953-A320-A904DD4AFA1E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SysCtrl", "SysCtrl\SysCtrl.vcxproj", "{1AD08EA3-54CB-4841-898C-679E57A9EF91}"
