@@ -449,17 +449,17 @@ void WindowImplBase::OnClick(TNotifyUI& msg)
 	}
 	else if( sCtrlName == _T("minbtn"))
 	{ 
-		SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); 
+		PostMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); 
 		return; 
 	}
 	else if( sCtrlName == _T("maxbtn"))
 	{ 
-		SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0); 
+		PostMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
 		return; 
 	}
 	else if( sCtrlName == _T("restorebtn"))
 	{ 
-		SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0); 
+		PostMessage(WM_SYSCOMMAND, SC_RESTORE, 0);
 		return; 
 	}
 	return;
