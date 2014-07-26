@@ -8,6 +8,7 @@ m_pParent(NULL),
 m_bUpdateNeeded(true),
 m_bMenuUsed(false),
 m_bWantTab(false),
+m_bUseDefaultAttr(true),
 m_bVisible(true), 
 m_bInternVisible(true),
 m_bFocused(false),
@@ -871,6 +872,7 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
     else if( _tcscmp(pstrName, _T("menu")) == 0 ) SetContextMenuUsed(_tcscmp(pstrValue, _T("true")) == 0);
 	else if( _tcscmp(pstrName, _T("virtualwnd")) == 0 ) SetVirtualWnd(pstrValue);
 	else if( _tcscmp(pstrName, _T("wanttab")) == 0)	SetWantTab(_tcscmp(pstrValue, _T("true"))== 0);
+	else if (_tcscmp(pstrName, _T("defattr")) == 0) UseDefaultAttribute() = _tcscmp(pstrValue, _T("true")) == 0;
 	else{
 		// 女孩不哭 注: 添加未知属性提醒
 #ifdef _DEBUG

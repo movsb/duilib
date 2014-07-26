@@ -435,7 +435,17 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
 			}
 		}
         // Init default attributes
-        if( pManager ) {
+		if (node.HasAttributes()){
+			int nAttr = node.GetAttributeCount();
+			for (int i = 0; i < nAttr; i++){
+				auto name = node.GetAttributeName(i);
+				if (*name == _T('d') && _tcscmp(name, _T("defattr")) == 0){
+					pControl->UseDefaultAttribute() = _tcscmp(node.GetAttributeValue(i), _T("true")) == 0;
+					break;
+				}
+			}
+		}
+        if( pManager && pControl->UseDefaultAttribute()) {
             pControl->SetManager(pManager, NULL, false);
             LPCTSTR pDefaultAttributes = pManager->GetDefaultAttributeList(pstrClass);
             if( pDefaultAttributes ) {

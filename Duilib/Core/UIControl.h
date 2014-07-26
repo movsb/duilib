@@ -208,6 +208,7 @@ public:
 
     virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
     CControlUI* ApplyAttributeList(LPCTSTR pstrList);
+	bool& UseDefaultAttribute() { return m_bUseDefaultAttr; }
 
     virtual SIZE EstimateSize(SIZE szAvailable);
 
@@ -239,6 +240,7 @@ protected:
     bool m_bUpdateNeeded;
     bool m_bMenuUsed;
 	bool m_bWantTab;
+	bool m_bUseDefaultAttr;
     RECT m_rcItem;
     RECT m_rcPadding;
     SIZE m_cXY;
