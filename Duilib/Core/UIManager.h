@@ -50,6 +50,8 @@ typedef enum EVENTTYPE_UI
     UIEVENT_NOTIFY,
     UIEVENT_COMMAND,
 
+    UIEVENT_CHILDEVENT,
+
     UIEVENT__LAST,
 };
 
@@ -297,6 +299,9 @@ public:
     bool RemoveNotifier(INotifyUI* pControl);   
     void SendNotify(TNotifyUI& Msg, bool bAsync = false);
     void SendNotify(CControlUI* pControl, LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false);
+
+    void EventOwner(CControlUI* pOwner, TNotifyUI& msg, bool bAsync = false);
+    void EventOwner(CControlUI* pOwner, CControlUI* pControl, LPCTSTR pMsg, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false);
 
     bool AddPreMessageFilter(IMessageFilterUI* pFilter);
     bool RemovePreMessageFilter(IMessageFilterUI* pFilter);

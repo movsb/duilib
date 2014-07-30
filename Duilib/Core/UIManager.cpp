@@ -1652,6 +1652,30 @@ void CPaintManagerUI::SendNotify(TNotifyUI& Msg, bool bAsync /*= false*/)
     }
 }
 
+void CPaintManagerUI::EventOwner(CControlUI* pOwner, TNotifyUI& msg, bool bAsync /*= false*/)
+{
+	if (!pOwner) return;
+
+	TEventUI evt = { 0 };
+	evt.Type = UIEVENT_CHILDEVENT;
+	evt.wParam = WPARAM(bAsync);
+	evt.lParam = LPARAM(&msg);
+	pOwner->Event(evt);
+}
+
+void CPaintManagerUI::EventOwner(CControlUI* pOwner, CControlUI* pControl, LPCTSTR pMsg, WPARAM wParam /*= 0*/, LPARAM lParam /*= 0*/, bool bAsync /*= false*/)
+{
+	if (!pOwner) return;
+
+	TNotifyUI msg;
+	msg.pSender = pControl;
+	msg.sType = pMsg;
+	msg.wParam = wParam;
+	msg.lParam = lParam;
+
+	EventOwner(pOwner, msg, bAsync);
+}
+
 bool CPaintManagerUI::UseParentResource(CPaintManagerUI* pm)
 {
     if( pm == NULL ) {
