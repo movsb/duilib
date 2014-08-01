@@ -5,6 +5,7 @@ namespace DuiLib {
 CControlUI::CControlUI() : 
 m_pManager(NULL), 
 m_pParent(NULL), 
+m_pOwner(NULL),
 m_bUpdateNeeded(true),
 m_bMenuUsed(false),
 m_bWantTab(false),

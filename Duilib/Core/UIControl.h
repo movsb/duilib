@@ -27,11 +27,8 @@ public:
     virtual CPaintManagerUI* GetManager() const;
     virtual void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
     virtual CControlUI* GetParent() const;
+    virtual CControlUI*& Owner() { return m_pOwner; }
 
-	// 女孩不哭 注:添加快捷转换到指定控件, 自定义的除外;
-	// 我明明是想要前身声明的, 但ListUI那里始终过不了, 居然还冒出来个const this, 大家都看不懂了
-	// 所以导致多了个friend; 本来应该在类外声明他们的, 是不是?
-	// 还好ControlUI没有private成员
 public:
 #define A(c)	friend class C##c##UI;  C##c##UI* To##c##UI() {return (C##c##UI*)this;}
 	A(Edit)
@@ -234,7 +231,8 @@ public:
 
 protected:
     CPaintManagerUI* m_pManager;
-    CControlUI* m_pParent;
+    CControlUI* m_pParent;	// Parent是用来传递Event 的; 除root外, 控件均有Parent
+    CControlUI* m_pOwner;	// Owner 是用来传递Notify的; 有没有Owner由是否分组决定
 	CDuiString m_sVirtualWnd;
     CDuiString m_sName;
     bool m_bUpdateNeeded;
