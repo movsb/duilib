@@ -191,24 +191,26 @@ LDispatch:
 	return bRet;
 }
 
-void CNotifyPump::NotifyPump(TNotifyUI& msg)
+bool CNotifyPump::NotifyPump(TNotifyUI& msg)
 {
-	///遍历虚拟窗口
+	//遍历子虚拟窗口
 	if( !msg.sVirtualWnd.IsEmpty() ){
+		TNotifyUI* outmsg = nullptr;
+		TNotifyUI  newmsg;
+		outmsg = UnpackMessage(msg, &newmsg);
 		for( int i = 0; i< m_VirtualWndMap.GetSize(); i++ ) {
 			if( LPCTSTR key = m_VirtualWndMap.GetAt(i) ) {
-				if( _tcsicmp(key, msg.sVirtualWnd.GetData()) == 0 ){
+				if (_tcsicmp(key, outmsg->sVirtualWnd.GetData()) == 0){
 					CNotifyPump* pObject = static_cast<CNotifyPump*>(m_VirtualWndMap.Find(key, false));
-					if( pObject && pObject->LoopDispatch(msg) )
-						return;
+					if (pObject && pObject->NotifyPump(*outmsg))
+						return true;
 				}
 			}
 		}
 	}
 
-	///
-	//遍历主窗口
-	LoopDispatch( msg );
+	//遍历当前虚拟窗口
+	return LoopDispatch( msg );
 }
 
 //////////////////////////////////////////////////////////////////////////

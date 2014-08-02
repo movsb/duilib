@@ -1624,6 +1624,9 @@ void CPaintManagerUI::SendNotify(CControlUI* pControl, LPCTSTR pstrMessage, WPAR
 
 void CPaintManagerUI::SendNotify(TNotifyUI& Msg, bool bAsync /*= false*/)
 {
+	Msg.ptMouse = m_ptLastMousePos;
+	Msg.dwTimestamp = ::GetTickCount();
+
 	if (CControlUI* pOwner = Msg.pSender->Owner()){
 		TEventUI evt = { 0 };
 		evt.Type = UIEVENT_CHILDEVENT;
@@ -1633,8 +1636,6 @@ void CPaintManagerUI::SendNotify(TNotifyUI& Msg, bool bAsync /*= false*/)
 		return;
 	}
 
-    Msg.ptMouse = m_ptLastMousePos;
-    Msg.dwTimestamp = ::GetTickCount();
 	if( m_bUsedVirtualWnd )
 	{
 		Msg.sVirtualWnd = Msg.pSender->GetVirtualWnd();

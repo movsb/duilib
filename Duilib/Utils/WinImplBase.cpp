@@ -467,7 +467,7 @@ void WindowImplBase::OnClick(TNotifyUI& msg)
 
 void WindowImplBase::Notify(TNotifyUI& msg)
 {
-	return CNotifyPump::NotifyPump(msg);
+	return (void)CNotifyPump::NotifyPump(msg);
 }
 
 }

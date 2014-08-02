@@ -51,8 +51,9 @@ class UILIB_API CNotifyPump
 public:
 	bool AddVirtualWnd(CDuiString strName,CNotifyPump* pObject);
 	bool RemoveVirtualWnd(CDuiString strName);
-	void NotifyPump(TNotifyUI& msg);
+	bool NotifyPump(TNotifyUI& msg);
 	bool LoopDispatch(TNotifyUI& msg);
+	virtual TNotifyUI* UnpackMessage(TNotifyUI& msg, TNotifyUI* out){return &msg;}
 	DUI_DECLARE_MESSAGE_MAP()
 private:
 	CStdStringPtrMap m_VirtualWndMap;
