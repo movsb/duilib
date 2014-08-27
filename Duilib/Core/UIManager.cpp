@@ -1484,16 +1484,15 @@ bool CPaintManagerUI::IsCaptured()
 
 bool CPaintManagerUI::SetCapturedUI(CControlUI* pCapture)
 {
-	if(m_pCapturedUI) return false;
-	m_pCapturedUI = pCapture;
+	if(m_pCapturedUI && pCapture!=NULL) return false;
 
-	if (m_pCapturedUI){
+	if (pCapture){
 		SetCapture();
 	}
 	else{
 		ReleaseCapture();
 	}
-
+	m_pCapturedUI = pCapture;
 	return true;
 }
 
@@ -2170,7 +2169,7 @@ CControlUI* CPaintManagerUI::GetRoot() const
 CControlUI* CPaintManagerUI::FindControl(POINT pt) const
 {
     ASSERT(m_pRoot);
-    return m_pRoot->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
+    return m_pRoot->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST | UIFIND_ENABLED);
 }
 
 CControlUI* CPaintManagerUI::FindControl(LPCTSTR pstrName) const
@@ -2183,7 +2182,7 @@ CControlUI* CPaintManagerUI::FindSubControlByPoint(CControlUI* pParent, POINT pt
 {
     if( pParent == NULL ) pParent = GetRoot();
     ASSERT(pParent);
-    return pParent->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
+    return pParent->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST | UIFIND_ENABLED);
 }
 
 CControlUI* CPaintManagerUI::FindSubControlByName(CControlUI* pParent, LPCTSTR pstrName) const
