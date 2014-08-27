@@ -624,6 +624,16 @@ bool CControlUI::SetCapture()
 }
 
 
+void CControlUI::ReleaseCapture()
+{
+	if (m_pManager){
+		if (m_pManager->GetCapturedUI() == this){
+			m_pManager->SetCapturedUI(NULL);
+		}
+	}
+}
+
+
 void CControlUI::Invalidate()
 {
     if( !IsVisible() ) return;

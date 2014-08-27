@@ -190,6 +190,7 @@ public:
 
 	//Êó±ê²¶×½
 	bool SetCapture();
+	void ReleaseCapture();
 
     void Invalidate();
     bool IsUpdateNeeded() const;

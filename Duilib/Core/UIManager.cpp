@@ -913,7 +913,6 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             if( pControl->GetManager() != this ) break;
             m_pEventClick = pControl;
             pControl->SetFocus();
-            SetCapture();
             TEventUI event = { 0 };
             event.Type = UIEVENT_BUTTONDOWN;
             event.pSender = pControl;
@@ -933,7 +932,6 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             CControlUI* pControl = FindControl(pt);
             if( pControl == NULL ) break;
             if( pControl->GetManager() != this ) break;
-            SetCapture();
             TEventUI event = { 0 };
             event.Type = UIEVENT_DBLCLICK;
             event.pSender = pControl;
@@ -959,8 +957,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             event.dwTimestamp = ::GetTickCount();
             m_pEventClick->Event(event);
             m_pEventClick = NULL;
-			ReleaseCapture();
-        }
+		}
         break;
     case WM_RBUTTONDOWN:
         {
@@ -972,7 +969,6 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             if( pControl == NULL ) break;
             if( pControl->GetManager() != this ) break;
             pControl->SetFocus();
-            SetCapture();
             TEventUI event = { 0 };
             event.Type = UIEVENT_RBUTTONDOWN;
             event.pSender = pControl;
@@ -983,7 +979,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             event.dwTimestamp = ::GetTickCount();
             pControl->Event(event);
             m_pEventClick = pControl;
-        }
+		}
         break;
 	case WM_RBUTTONUP:
 		{
@@ -1000,7 +996,6 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
 			event.dwTimestamp = ::GetTickCount();
 			m_pEventClick->Event(event);
 			m_pEventClick = NULL;
-			ReleaseCapture();
 		}
 		break;
     case WM_CONTEXTMENU:
@@ -1491,6 +1486,14 @@ bool CPaintManagerUI::SetCapturedUI(CControlUI* pCapture)
 {
 	if(m_pCapturedUI) return false;
 	m_pCapturedUI = pCapture;
+
+	if (m_pCapturedUI){
+		SetCapture();
+	}
+	else{
+		ReleaseCapture();
+	}
+
 	return true;
 }
 
