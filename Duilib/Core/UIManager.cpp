@@ -804,11 +804,11 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
         break;
     case WM_MOUSEHOVER:
         {
-            m_bMouseTracking = false;
+			if (m_pCapturedUI) break;
+			m_bMouseTracking = false;
             POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             CControlUI* pHover = FindControl(pt);
             if( pHover == NULL ) break;
-            if(m_pCapturedUI && m_pCapturedUI!=pHover) break;
             // Generate mouse hover event
             if( m_pEventHover != NULL ) {
                 TEventUI event = { 0 };
