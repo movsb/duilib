@@ -16,7 +16,7 @@ namespace DuiLib
 
 	LPCTSTR CButtonUI::GetClass() const
 	{
-		return _T("ButtonUI");
+		return GetClassStatic();
 	}
 
 	LPVOID CButtonUI::GetInterface(LPCTSTR pstrName)
@@ -32,28 +32,28 @@ namespace DuiLib
 
 	void CButtonUI::DoEvent(TEventUI& event)
 	{
-		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if( m_pParent != NULL ) m_pParent->DoEvent(event);
-			else CLabelUI::DoEvent(event);
-			return;
+		if (!CControlUI::Activate()){
+			return CLabelUI::DoEvent(event);
 		}
 
-		if( event.Type == UIEVENT_KEYDOWN )
+		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
+			return CLabelUI::DoEvent(event);
+		}
+
+		if( event.Type == UIEVENT_KEYUP )
 		{
 			if (IsKeyboardEnabled()) {
 				if( event.chKey == VK_SPACE || event.chKey == VK_RETURN ) {
-					Activate();
+					GetManager()->SendNotify(this, DUI_MSGTYPE_CLICK);
 					return;
 				}
 			}
 		}
-		else if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK )
+		else if( event.Type == UIEVENT_BUTTONDOWN )
 		{
-			if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) {
-				SetCapture();
-				m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
-				Invalidate();
-			}
+			SetCapture();
+			m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
+			Invalidate();
 			return;
 		}
 		else if( event.Type == UIEVENT_MOUSEMOVE )
@@ -62,57 +62,49 @@ namespace DuiLib
 				if( ::PtInRect(&m_rcItem, event.ptMouse) ) m_uButtonState |= UISTATE_PUSHED;
 				else m_uButtonState &= ~UISTATE_PUSHED;
 				Invalidate();
+				return;
 			}
 			return;
 		}
 		else if(event.Type == UIEVENT_LOSTCAPTURE){
-			m_uButtonState &= ~(UISTATE_PUSHED | UISTATE_CAPTURED | UISTATE_HOT);
-			if(::PtInRect(&m_rcItem, event.ptMouse)) m_uButtonState |= UISTATE_HOT;
+			m_uButtonState = 0;
+			if(::PtInRect(&m_rcItem, event.ptMouse))
+				m_uButtonState |= UISTATE_HOT;
 			Invalidate();
 			return;
 		}
 		else if( event.Type == UIEVENT_BUTTONUP )
 		{
 			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
-				if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();
+				ReleaseCapture();
+				if (::PtInRect(&m_rcItem, event.ptMouse)){
+					GetManager()->SendNotify(this, DUI_MSGTYPE_CLICK);
+					return;
+				}
 			}
 			return;
 		}
 		else if( event.Type == UIEVENT_CONTEXTMENU )
 		{
-			if( IsContextMenuUsed() ) {
-				m_pManager->SendNotify(this, DUI_MSGTYPE_MENU, event.wParam, event.lParam);
-			}
 			return;
 		}
 		else if( event.Type == UIEVENT_MOUSEENTER )
 		{
-			if( IsEnabled() ) {
-				m_uButtonState |= UISTATE_HOT;
-				Invalidate();
-			}
-			// return;
+			m_uButtonState |= UISTATE_HOT;
+			Invalidate();
+			return;
 		}
 		else if( event.Type == UIEVENT_MOUSELEAVE )
 		{
-			if( IsEnabled() ) {
-				m_uButtonState &= ~UISTATE_HOT;
-				Invalidate();
-			}
-			// return;
+			m_uButtonState &= ~UISTATE_HOT;
+			Invalidate();
+			return;
 		}
 		else if( event.Type == UIEVENT_SETCURSOR ) {
 			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
 			return;
 		}
 		CLabelUI::DoEvent(event);
-	}
-
-	bool CButtonUI::Activate()
-	{
-		if( !CControlUI::Activate() ) return false;
-		if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
-		return true;
 	}
 
 	void CButtonUI::SetEnabled(bool bEnable)
@@ -123,28 +115,11 @@ namespace DuiLib
 		}
 	}
 
-	//************************************
-	// Method:    SetHotBkColor
-	// FullName:  CButtonUI::SetHotBkColor
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: DWORD dwColor
-	// Note:	  
-	//************************************
 	void CButtonUI::SetHotBkColor( DWORD dwColor )
 	{
 		m_dwHotBkColor = dwColor;
 	}
 
-	//************************************
-	// Method:    GetHotBkColor
-	// FullName:  CButtonUI::GetHotBkColor
-	// Access:    public 
-	// Returns:   DWORD
-	// Qualifier: const
-	// Note:	  
-	//************************************
 	DWORD CButtonUI::GetHotBkColor() const
 	{
 		return m_dwHotBkColor;
@@ -235,56 +210,22 @@ namespace DuiLib
 		Invalidate();
 	}
 
-	//************************************
-	// Method:    GetForeImage
-	// FullName:  CButtonUI::GetForeImage
-	// Access:    public 
-	// Returns:   LPCTSTR
-	// Qualifier:
-	// Note:	  
-	//************************************
 	LPCTSTR CButtonUI::GetForeImage()
 	{
 		return m_sForeImage;
 	}
 
-	//************************************
-	// Method:    SetForeImage
-	// FullName:  CButtonUI::SetForeImage
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: LPCTSTR pStrImage
-	// Note:	  
-	//************************************
 	void CButtonUI::SetForeImage( LPCTSTR pStrImage )
 	{
 		m_sForeImage = pStrImage;
 		Invalidate();
 	}
 
-	//************************************
-	// Method:    GetHotForeImage
-	// FullName:  CButtonUI::GetHotForeImage
-	// Access:    public 
-	// Returns:   LPCTSTR
-	// Qualifier:
-	// Note:	  
-	//************************************
 	LPCTSTR CButtonUI::GetHotForeImage()
 	{
 		return m_sHotForeImage;
 	}
 
-	//************************************
-	// Method:    SetHotForeImage
-	// FullName:  CButtonUI::SetHotForeImage
-	// Access:    public 
-	// Returns:   void
-	// Qualifier:
-	// Parameter: LPCTSTR pStrImage
-	// Note:	  
-	//************************************
 	void CButtonUI::SetHotForeImage( LPCTSTR pStrImage )
 	{
 		m_sHotForeImage = pStrImage;

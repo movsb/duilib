@@ -11,10 +11,10 @@ namespace DuiLib
 		CButtonUI();
 
 		LPCTSTR GetClass() const;
+		static LPCTSTR GetClassStatic(){ return _T("Button"); }
 		LPVOID GetInterface(LPCTSTR pstrName);
 		UINT GetControlFlags() const;
 
-		bool Activate();
 		void SetEnabled(bool bEnable = true);
 		void DoEvent(TEventUI& event);
 
