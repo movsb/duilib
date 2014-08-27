@@ -7,7 +7,6 @@ m_pManager(NULL),
 m_pParent(NULL), 
 m_pOwner(NULL),
 m_bUpdateNeeded(true),
-m_bMenuUsed(false),
 m_bWantTab(false),
 m_bUseDefaultAttr(true),
 m_bVisible(true), 
@@ -67,7 +66,7 @@ LPVOID CControlUI::GetInterface(LPCTSTR pstrName)
 
 LPCTSTR CControlUI::GetClass() const
 {
-    return _T("ControlUI");
+	return GetClassStatic();
 }
 
 UINT CControlUI::GetControlFlags() const
@@ -483,16 +482,6 @@ void CControlUI::SetShortcut(TCHAR ch)
     m_chShortcut = ch;
 }
 
-bool CControlUI::IsContextMenuUsed() const
-{
-    return m_bMenuUsed;
-}
-
-void CControlUI::SetContextMenuUsed(bool bMenuUsed)
-{
-    m_bMenuUsed = bMenuUsed;
-}
-
 void CControlUI::SetWantTab(bool bWant)
 {
 	m_bWantTab = bWant;
@@ -694,7 +683,8 @@ DWORD CControlUI::GetAdjustColor(DWORD dwColor)
 void CControlUI::Init()
 {
     DoInit();
-    if( OnInit ) OnInit(this);
+    if( OnInit ) 
+		OnInit(this);
 }
 
 void CControlUI::DoInit()
@@ -704,41 +694,41 @@ void CControlUI::DoInit()
 
 void CControlUI::Event(TEventUI& event)
 {
-    if( OnEvent(&event) ) DoEvent(event);
+    if( OnEvent(&event) ) 
+		DoEvent(event);
 }
 
 void CControlUI::DoEvent(TEventUI& event)
 {
-    if( event.Type == UIEVENT_SETCURSOR )
-    {
-        ::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
-        return;
-    }
-    if( event.Type == UIEVENT_SETFOCUS ) 
+	if (!Activate()){
+		if (GetParent()){
+			GetParent()->DoEvent(event);
+		}
+		return;
+	}
+
+	if (0){
+
+	}
+    else if( event.Type == UIEVENT_SETFOCUS ) 
     {
         m_bFocused = true;
         Invalidate();
         return;
     }
-    if( event.Type == UIEVENT_KILLFOCUS ) 
+    else if( event.Type == UIEVENT_KILLFOCUS ) 
     {
         m_bFocused = false;
         Invalidate();
         return;
     }
-    if( event.Type == UIEVENT_TIMER )
-    {
-        m_pManager->SendNotify(this, DUI_MSGTYPE_TIMER, event.wParam, event.lParam);
-        return;
-    }
-    if( event.Type == UIEVENT_CONTEXTMENU )
-    {
-        if( IsContextMenuUsed() ) {
-            m_pManager->SendNotify(this, DUI_MSGTYPE_MENU, event.wParam, event.lParam);
-            return;
-        }
-    }
-    if( m_pParent != NULL ) m_pParent->DoEvent(event);
+	else if (event.Type == UIEVENT_SETCURSOR){
+		::SetCursor(LoadCursor(NULL, IDC_ARROW));
+		return;
+	}
+ 
+    if( m_pParent != NULL ) 
+		m_pParent->DoEvent(event);
 }
 
 
@@ -880,7 +870,6 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
     else if( _tcscmp(pstrName, _T("visible")) == 0 ) SetVisible(_tcscmp(pstrValue, _T("true")) == 0);
     else if( _tcscmp(pstrName, _T("float")) == 0 ) SetFloat(_tcscmp(pstrValue, _T("true")) == 0);
     else if( _tcscmp(pstrName, _T("shortcut")) == 0 ) SetShortcut(pstrValue[0]);
-    else if( _tcscmp(pstrName, _T("menu")) == 0 ) SetContextMenuUsed(_tcscmp(pstrValue, _T("true")) == 0);
 	else if( _tcscmp(pstrName, _T("virtualwnd")) == 0 ) SetVirtualWnd(pstrValue);
 	else if( _tcscmp(pstrName, _T("wanttab")) == 0)	SetWantTab(_tcscmp(pstrValue, _T("true"))== 0);
 	else if (_tcscmp(pstrName, _T("defattr")) == 0) UseDefaultAttribute() = _tcscmp(pstrValue, _T("true")) == 0;
@@ -1050,110 +1039,55 @@ void CControlUI::DoPostPaint(HDC hDC, const RECT& rcPaint)
     return;
 }
 
-//************************************
-// 函数名称: GetLeftBorderSize
-// 返回类型: int
-// 函数说明: 
-//************************************
 int CControlUI::GetLeftBorderSize() const
 {
 	return m_rcBorderSize.left;
 }
 
-//************************************
-// 函数名称: SetLeftBorderSize
-// 返回类型: void
-// 参数信息: int nSize
-// 函数说明: 
-//************************************
 void CControlUI::SetLeftBorderSize( int nSize )
 {
 	m_rcBorderSize.left = nSize;
 	Invalidate();
 }
 
-//************************************
-// 函数名称: GetTopBorderSize
-// 返回类型: int
-// 函数说明: 
-//************************************
 int CControlUI::GetTopBorderSize() const
 {
 	return m_rcBorderSize.top;
 }
 
-//************************************
-// 函数名称: SetTopBorderSize
-// 返回类型: void
-// 参数信息: int nSize
-// 函数说明: 
-//************************************
 void CControlUI::SetTopBorderSize( int nSize )
 {
 	m_rcBorderSize.top = nSize;
 	Invalidate();
 }
 
-//************************************
-// 函数名称: GetRightBorderSize
-// 返回类型: int
-// 函数说明: 
-//************************************
 int CControlUI::GetRightBorderSize() const
 {
 	return m_rcBorderSize.right;
 }
 
-//************************************
-// 函数名称: SetRightBorderSize
-// 返回类型: void
-// 参数信息: int nSize
-// 函数说明: 
-//************************************
 void CControlUI::SetRightBorderSize( int nSize )
 {
 	m_rcBorderSize.right = nSize;
 	Invalidate();
 }
 
-//************************************
-// 函数名称: GetBottomBorderSize
-// 返回类型: int
-// 函数说明: 
-//************************************
 int CControlUI::GetBottomBorderSize() const
 {
 	return m_rcBorderSize.bottom;
 }
 
-//************************************
-// 函数名称: SetBottomBorderSize
-// 返回类型: void
-// 参数信息: int nSize
-// 函数说明: 
-//************************************
 void CControlUI::SetBottomBorderSize( int nSize )
 {
 	m_rcBorderSize.bottom = nSize;
 	Invalidate();
 }
 
-//************************************
-// 函数名称: GetBorderStyle
-// 返回类型: int
-// 函数说明: 
-//************************************
 int CControlUI::GetBorderStyle() const
 {
 	return m_nBorderStyle;
 }
 
-//************************************
-// 函数名称: SetBorderStyle
-// 返回类型: void
-// 参数信息: int nStyle
-// 函数说明: 
-//************************************
 void CControlUI::SetBorderStyle( int nStyle )
 {
 	m_nBorderStyle = nStyle;

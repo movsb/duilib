@@ -20,6 +20,7 @@ public:
     virtual CDuiString GetName() const;
     virtual void SetName(LPCTSTR pstrName);
     virtual LPCTSTR GetClass() const;
+	static LPCTSTR GetClassStatic(){ return _T("Control"); }
     virtual LPVOID GetInterface(LPCTSTR pstrName);
     virtual UINT GetControlFlags() const;
 
@@ -157,10 +158,6 @@ public:
     virtual TCHAR GetShortcut() const;
     virtual void SetShortcut(TCHAR ch);
 
-    // 菜单
-    virtual bool IsContextMenuUsed() const;
-    virtual void SetContextMenuUsed(bool bMenuUsed);
-
 	//TAB键 应该没必要virtual
 	virtual void SetWantTab(bool bWant = true);
 	virtual bool IsWantTab() const;
@@ -237,7 +234,6 @@ protected:
 	CDuiString m_sVirtualWnd;
     CDuiString m_sName;
     bool m_bUpdateNeeded;
-    bool m_bMenuUsed;
 	bool m_bWantTab;
 	bool m_bUseDefaultAttr;
     RECT m_rcItem;
