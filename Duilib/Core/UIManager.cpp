@@ -2162,7 +2162,9 @@ void CPaintManagerUI::RemoveAllDefaultAttributeList()
 
 CControlUI* CPaintManagerUI::GetRoot() const
 {
-    ASSERT(m_pRoot);
+	//有时候需要判断xml是否加载成功,所以不
+	//应该在这里assert
+    //ASSERT(m_pRoot);
     return m_pRoot;
 }
 
