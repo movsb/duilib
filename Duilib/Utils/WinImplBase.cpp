@@ -180,9 +180,9 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
 		&& pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) {
 			CControlUI* pControl = static_cast<CControlUI*>(m_PaintManager.FindControl(pt));
-			if( pControl && _tcsicmp(pControl->GetClass(), _T("ButtonUI")) != 0 && 
-				_tcsicmp(pControl->GetClass(), _T("OptionUI")) != 0 &&
-				_tcsicmp(pControl->GetClass(), _T("TextUI")) != 0 )
+			if( pControl && _tcsicmp(pControl->GetClass(), CButtonUI::GetClassStatic()) != 0 && 
+				_tcsicmp(pControl->GetClass(), COptionUI::GetClassStatic()) != 0 &&
+				_tcsicmp(pControl->GetClass(), CTextUI::GetClassStatic()) != 0 )
 				return HTCAPTION;
 	}
 
@@ -214,17 +214,6 @@ LRESULT WindowImplBase::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	return 0;
 }
 
-LRESULT WindowImplBase::OnMouseWheel(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT WindowImplBase::OnMouseHover(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
 #endif
 
 LRESULT WindowImplBase::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -241,34 +230,29 @@ LRESULT WindowImplBase::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 		::DeleteObject(hRgn);
 	}
 #endif
+
+	if ((wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
+		&& GetManager()->GetRoot())
+	{
+		CControlUI* btnmax = FindControl(_T("maxbtn"));
+		CControlUI* btnrestore = FindControl(_T("restorebtn"));
+		bool bMaximized = wParam == SIZE_MAXIMIZED;
+		if (btnmax && btnrestore){
+			if (bMaximized)
+			{
+				btnmax->SetVisible(false);
+				btnrestore->SetVisible(true);
+			}
+			else
+			{
+				btnmax->SetVisible(true);
+				btnrestore->SetVisible(false);
+			}
+		}
+	}
+
 	bHandled = FALSE;
 	return 0;
-}
-
-LRESULT WindowImplBase::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT WindowImplBase::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	if (wParam == SC_CLOSE)
-	{
-		bHandled = TRUE;
-		SendMessage(WM_CLOSE);
-		return 0;
-	}
-#if defined(WIN32) && !defined(UNDER_CE)
-	BOOL bZoomed = ::IsZoomed(*this);
-	LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
-	if( ::IsZoomed(*this) != bZoomed )
-	{
-	}
-#else
-	LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
-#endif
-	return lRes;
 }
 
 LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -350,42 +334,6 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	return 0;
 }
 
-LRESULT WindowImplBase::OnKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT WindowImplBase::OnKillFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT WindowImplBase::OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT WindowImplBase::OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT WindowImplBase::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT WindowImplBase::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	return 0;
-}
-
 LRESULT WindowImplBase::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = 0;
@@ -401,18 +349,8 @@ LRESULT WindowImplBase::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_NCPAINT:		lRes = OnNcPaint(uMsg, wParam, lParam, bHandled); break;
 	case WM_NCHITTEST:		lRes = OnNcHitTest(uMsg, wParam, lParam, bHandled); break;
 	case WM_GETMINMAXINFO:	lRes = OnGetMinMaxInfo(uMsg, wParam, lParam, bHandled); break;
-	case WM_MOUSEWHEEL:		lRes = OnMouseWheel(uMsg, wParam, lParam, bHandled); break;
 #endif
 	case WM_SIZE:			lRes = OnSize(uMsg, wParam, lParam, bHandled); break;
-	case WM_CHAR:		lRes = OnChar(uMsg, wParam, lParam, bHandled); break;
-	case WM_SYSCOMMAND:		lRes = OnSysCommand(uMsg, wParam, lParam, bHandled); break;
-	case WM_KEYDOWN:		lRes = OnKeyDown(uMsg, wParam, lParam, bHandled); break;
-	case WM_KILLFOCUS:		lRes = OnKillFocus(uMsg, wParam, lParam, bHandled); break;
-	case WM_SETFOCUS:		lRes = OnSetFocus(uMsg, wParam, lParam, bHandled); break;
-	case WM_LBUTTONUP:		lRes = OnLButtonUp(uMsg, wParam, lParam, bHandled); break;
-	case WM_LBUTTONDOWN:	lRes = OnLButtonDown(uMsg, wParam, lParam, bHandled); break;
-	case WM_MOUSEMOVE:		lRes = OnMouseMove(uMsg, wParam, lParam, bHandled); break;
-	case WM_MOUSEHOVER:	lRes = OnMouseHover(uMsg, wParam, lParam, bHandled); break;
 	default:				bHandled = FALSE; break;
 	}
 	if (bHandled) return lRes;
@@ -431,14 +369,6 @@ LRESULT WindowImplBase::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPa
 	return 0;
 }
 
-LONG WindowImplBase::GetStyle()
-{
-	LONG styleValue = ::GetWindowLong(*this, GWL_STYLE);
-	styleValue &= ~WS_CAPTION;
-
-	return styleValue;
-}
-
 void WindowImplBase::OnClick(TNotifyUI& msg)
 {
 	CDuiString sCtrlName = msg.pSender->GetName();
@@ -449,17 +379,17 @@ void WindowImplBase::OnClick(TNotifyUI& msg)
 	}
 	else if( sCtrlName == _T("minbtn"))
 	{ 
-		PostMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); 
+		::ShowWindow(GetHWND(), SW_MINIMIZE);
 		return; 
 	}
 	else if( sCtrlName == _T("maxbtn"))
 	{ 
-		PostMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		::ShowWindow(GetHWND(), SW_MAXIMIZE);
 		return; 
 	}
 	else if( sCtrlName == _T("restorebtn"))
 	{ 
-		PostMessage(WM_SYSCOMMAND, SC_RESTORE, 0);
+		::ShowWindow(GetHWND(), SW_RESTORE);
 		return; 
 	}
 	return;
