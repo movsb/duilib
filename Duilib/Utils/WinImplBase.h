@@ -20,7 +20,9 @@ namespace DuiLib
 		, public IDialogBuilderCallback
 	{
 	public:
-		WindowImplBase(){};
+		WindowImplBase()
+			: m_dwWindowPosState(SIZE_MINIMIZED)
+		{}
 		virtual ~WindowImplBase(){};
 		virtual void InitWindow(){};
 		virtual void OnFinalMessage( HWND hWnd );
@@ -35,6 +37,7 @@ namespace DuiLib
 		virtual LPCTSTR GetWindowClassName(void) const = 0 ;
 		virtual LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
 
+		WPARAM m_dwWindowPosState;
 		CPaintManagerUI m_PaintManager;
 		//女孩不哭 注:添加此函数方便
 		CPaintManagerUI* GetManager();

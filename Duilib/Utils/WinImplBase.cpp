@@ -231,25 +231,25 @@ LRESULT WindowImplBase::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	}
 #endif
 
-	if ((wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
+	if (wParam != m_dwWindowPosState
+		&& (wParam==SIZE_MAXIMIZED || wParam==SIZE_RESTORED)
 		&& GetManager()->GetRoot())
 	{
 		CControlUI* btnmax = FindControl(_T("maxbtn"));
 		CControlUI* btnrestore = FindControl(_T("restorebtn"));
-		bool bMaximized = wParam == SIZE_MAXIMIZED;
 		if (btnmax && btnrestore){
-			if (bMaximized)
-			{
+			if (wParam == SIZE_MAXIMIZED){
 				btnmax->SetVisible(false);
 				btnrestore->SetVisible(true);
 			}
-			else
-			{
+			else{
 				btnmax->SetVisible(true);
 				btnrestore->SetVisible(false);
 			}
 		}
 	}
+
+	m_dwWindowPosState = wParam;
 
 	bHandled = FALSE;
 	return 0;
