@@ -32,7 +32,9 @@ namespace DuiLib
 
 	void CButtonUI::DoEvent(TEventUI& event)
 	{
-		if (!CControlUI::Activate()){
+		if (!CControlUI::Activate()
+			&& event.Type != UIEVENT_LOSTCAPTURE)
+		{
 			return CLabelUI::DoEvent(event);
 		}
 
@@ -68,19 +70,19 @@ namespace DuiLib
 		}
 		else if(event.Type == UIEVENT_LOSTCAPTURE){
 			m_uButtonState = 0;
-			if(::PtInRect(&m_rcItem, event.ptMouse))
+			if (Activate() && ::PtInRect(&m_rcItem, event.ptMouse)){
 				m_uButtonState |= UISTATE_HOT;
+			}
 			Invalidate();
 			return;
 		}
 		else if( event.Type == UIEVENT_BUTTONUP )
 		{
 			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
-				ReleaseCapture();
 				if (::PtInRect(&m_rcItem, event.ptMouse)){
 					GetManager()->SendNotify(this, DUI_MSGTYPE_CLICK);
-					return;
 				}
+				ReleaseCapture();
 			}
 			return;
 		}
