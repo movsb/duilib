@@ -14,7 +14,7 @@ namespace DuiLib
 
 	LPCTSTR COptionUI::GetClass() const
 	{
-		return _T("OptionUI");
+		return GetClassStatic();
 	}
 
 	LPVOID COptionUI::GetInterface(LPCTSTR pstrName)

@@ -12,6 +12,7 @@ namespace DuiLib
 		~COptionUI();
 
 		LPCTSTR GetClass() const;
+		static LPCTSTR GetClassStatic(){ return _T("Option"); }
 		LPVOID GetInterface(LPCTSTR pstrName);
 
 		void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
