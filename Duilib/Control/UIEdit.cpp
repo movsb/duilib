@@ -178,7 +178,7 @@ namespace DuiLib
 	{
 		if( !IsEnabled() ) return CControlUI::GetControlFlags();
 
-		return UIFLAG_SETCURSOR | UIFLAG_TABSTOP;
+		return UIFLAG_SETCURSOR | UIFLAG_TABSTOP | UIFLAG_HASHWND;
 	}
 
 	void CEditUI::DoEvent(TEventUI& event)

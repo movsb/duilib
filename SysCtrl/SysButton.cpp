@@ -100,7 +100,6 @@ LPCTSTR CSysButtonUI::GetClass() const
 LPVOID CSysButtonUI::GetInterface(LPCTSTR pstrName)
 {
 	if(_tcscmp(pstrName, SYSCTRL_BUTTON) ==0 ) return this;
-	else if(_tcscmp(pstrName, _T("HWND"))==0)  return m_pWnd->GetHWND();
 	return __super::GetInterface(pstrName);
 }
 
@@ -108,7 +107,7 @@ UINT CSysButtonUI::GetControlFlags() const
 {
 	if( !IsEnabled() ) return CControlUI::GetControlFlags();
 
-	return UIFLAG_SETCURSOR | UIFLAG_TABSTOP;
+	return UIFLAG_SETCURSOR | UIFLAG_TABSTOP | UIFLAG_HASHWND;
 }
 
 void CSysButtonUI::SetFont(int index)

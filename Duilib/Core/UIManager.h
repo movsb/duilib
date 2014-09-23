@@ -62,6 +62,7 @@ typedef enum EVENTTYPE_UI
 #define UIFLAG_TABSTOP       0x00000001
 #define UIFLAG_SETCURSOR     0x00000002
 #define UIFLAG_WANTRETURN    0x00000004
+#define UIFLAG_HASHWND       0x00000008
 
 // Flags for FindControl()
 #define UIFIND_ALL           0x00000000
