@@ -23,7 +23,6 @@ namespace DuiLib
 		m_bShowHtml(false),
 
 		m_EnableEffect(false),
-		//m_gdiplusToken(0),
 		m_TextRenderingHintAntiAlias(TextRenderingHintSystemDefault),
 		m_TransShadow(60),
 		m_TransText(168),
