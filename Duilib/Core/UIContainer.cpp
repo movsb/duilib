@@ -308,14 +308,9 @@ namespace DuiLib
 
 		if(event.Type == UIEVENT_BUTTONDOWN
 			|| event.Type == UIEVENT_RBUTTONDOWN
-			|| event.Type ==UIEVENT_MBUTTONDOWN){
-			if(!GetSelectionControl() || !GetManager()->SetCapturedUI(this))
-				return;
-			m_pSelection->SetVisible(true);
-			m_pSelection->SetPos(CDuiRect(event.ptMouse.x, event.ptMouse.y, 0, 0));
-			m_dwState |= UISTATE_CAPTURED;
-			m_ptSelectionStart = event.ptMouse;
-			return;
+			|| event.Type ==UIEVENT_MBUTTONDOWN)
+		{
+
 		}
 		else if(event.Type == UIEVENT_LOSTCAPTURE){
 			m_dwState &= ~UISTATE_CAPTURED;
