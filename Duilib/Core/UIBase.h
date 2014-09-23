@@ -5,18 +5,13 @@
 #pragma once
 
 namespace DuiLib {
-/////////////////////////////////////////////////////////////////////////////////////
-//
-
-#define UI_WNDSTYLE_CONTAINER  (0)
 #define UI_WNDSTYLE_FRAME      (WS_VISIBLE | WS_OVERLAPPEDWINDOW)
 #define UI_WNDSTYLE_CHILD      (WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN)
-#define UI_WNDSTYLE_DIALOG     (WS_VISIBLE | WS_POPUPWINDOW | WS_CAPTION | WS_DLGFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN)
+#define UI_WNDSTYLE_DUI	       (WS_VISIBLE | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_SYSMENU | WS_SIZEBOX | WS_MAXIMIZEBOX | WS_MINIMIZEBOX)
 
 #define UI_WNDSTYLE_EX_FRAME   (WS_EX_WINDOWEDGE)
 #define UI_WNDSTYLE_EX_DIALOG  (WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME)
 
-#define UI_CLASSSTYLE_CONTAINER  (0)
 #define UI_CLASSSTYLE_FRAME      (CS_VREDRAW | CS_HREDRAW)
 #define UI_CLASSSTYLE_CHILD      (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS | CS_SAVEBITS)
 #define UI_CLASSSTYLE_DIALOG     (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS | CS_SAVEBITS)
@@ -70,9 +65,8 @@ public:
     bool RegisterWindowClass();
     bool RegisterSuperclass();
 
-    HWND Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, const RECT rc, HMENU hMenu = NULL);
-    HWND Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int cx = CW_USEDEFAULT, int cy = CW_USEDEFAULT, HMENU hMenu = NULL);
-    HWND CreateDuiWindow(HWND hwndParent, LPCTSTR pstrWindowName,DWORD dwStyle =0, DWORD dwExStyle =0);
+	HWND Create(HWND hwndParent, LPCTSTR pstrWindowName, DWORD dwStyle, DWORD dwExStyle, const RECT& rc);
+    HWND Create(HWND hwndParent, LPCTSTR pstrWindowName="",DWORD dwStyle =0, DWORD dwExStyle =0);
     HWND Subclass(HWND hWnd);
     void Unsubclass();
     void ShowWindow(bool bShow = true, bool bTakeFocus = true);
@@ -100,6 +94,7 @@ protected:
     HWND m_hWnd;
     WNDPROC m_OldWndProc;
     bool m_bSubclassed;
+	bool m_bFrameWnd;
 };
 
 } // namespace DuiLib

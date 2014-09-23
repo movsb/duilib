@@ -756,7 +756,7 @@ HWND CActiveXWnd::Init(CActiveXCtrl* pOwner, HWND hWndParent)
 {
     m_pOwner = pOwner;
     UINT uStyle = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-    Create(hWndParent, _T("UIActiveX"), uStyle, 0L, 0,0,0,0, NULL);
+    Create(hWndParent, _T("UIActiveX"), uStyle);
     return m_hWnd;
 }
 

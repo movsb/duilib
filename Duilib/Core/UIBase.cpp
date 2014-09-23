@@ -216,7 +216,9 @@ bool CNotifyPump::NotifyPump(TNotifyUI& msg)
 //////////////////////////////////////////////////////////////////////////
 ///
 CWindowWnd::CWindowWnd() : m_hWnd(NULL), m_OldWndProc(::DefWindowProc), m_bSubclassed(false)
+, m_bFrameWnd(false)
 {
+
 }
 
 HWND CWindowWnd::GetHWND() const 
@@ -239,23 +241,32 @@ CWindowWnd::operator HWND() const
     return m_hWnd;
 }
 
-HWND CWindowWnd::CreateDuiWindow( HWND hwndParent, LPCTSTR pstrWindowName,DWORD dwStyle /*=0*/, DWORD dwExStyle /*=0*/ )
+HWND CWindowWnd::Create( HWND hwndParent, LPCTSTR pstrWindowName /*=0*/,DWORD dwStyle /*=0*/, DWORD dwExStyle /*=0*/ )
 {
-	return Create(hwndParent,pstrWindowName,dwStyle,dwExStyle,0,0,0,0,NULL);
+	if (GetSuperClassName() != NULL && !RegisterSuperclass()) return NULL;
+	if (GetSuperClassName() == NULL && !RegisterWindowClass()) return NULL;
+
+	m_bFrameWnd = (dwStyle & WS_CAPTION) || (dwStyle & WS_BORDER)/* || (dwStyle & WS_THICKFRAME)*/;
+
+	m_hWnd = ::CreateWindowEx(dwExStyle, GetWindowClassName(), pstrWindowName, dwStyle, 
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		hwndParent, NULL, CPaintManagerUI::GetInstance(), this);
+	ASSERT(m_hWnd != NULL);
+	return m_hWnd;
 }
 
-HWND CWindowWnd::Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, const RECT rc, HMENU hMenu)
+HWND CWindowWnd::Create(HWND hwndParent, LPCTSTR pstrWindowName, DWORD dwStyle, DWORD dwExStyle, const RECT& rc)
 {
-    return Create(hwndParent, pstrName, dwStyle, dwExStyle, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hMenu);
-}
+	if (GetSuperClassName() != NULL && !RegisterSuperclass()) return NULL;
+	if (GetSuperClassName() == NULL && !RegisterWindowClass()) return NULL;
 
-HWND CWindowWnd::Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, int x, int y, int cx, int cy, HMENU hMenu)
-{
-    if( GetSuperClassName() != NULL && !RegisterSuperclass() ) return NULL;
-    if( GetSuperClassName() == NULL && !RegisterWindowClass() ) return NULL;
-    m_hWnd = ::CreateWindowEx(dwExStyle, GetWindowClassName(), pstrName, dwStyle, x, y, cx, cy, hwndParent, hMenu, CPaintManagerUI::GetInstance(), this);
-    ASSERT(m_hWnd!=NULL);
-    return m_hWnd;
+	m_bFrameWnd = (dwStyle & WS_CAPTION) || (dwStyle & WS_BORDER)/* || (dwStyle & WS_THICKFRAME)*/;
+
+	m_hWnd = ::CreateWindowEx(dwExStyle, GetWindowClassName(), pstrWindowName, dwStyle,
+		rc.left, rc.bottom, rc.right-rc.left,rc.bottom-rc.top,
+		hwndParent, NULL, CPaintManagerUI::GetInstance(), this);
+	ASSERT(m_hWnd != NULL);
+	return m_hWnd;
 }
 
 HWND CWindowWnd::Subclass(HWND hWnd)
