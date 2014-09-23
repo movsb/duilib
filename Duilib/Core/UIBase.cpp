@@ -263,7 +263,7 @@ HWND CWindowWnd::Create(HWND hwndParent, LPCTSTR pstrWindowName, DWORD dwStyle, 
 	m_bFrameWnd = (dwStyle & WS_CAPTION) || (dwStyle & WS_BORDER)/* || (dwStyle & WS_THICKFRAME)*/;
 
 	m_hWnd = ::CreateWindowEx(dwExStyle, GetWindowClassName(), pstrWindowName, dwStyle,
-		rc.left, rc.bottom, rc.right-rc.left,rc.bottom-rc.top,
+		rc.left, rc.top, rc.right-rc.left,rc.bottom-rc.top,
 		hwndParent, NULL, CPaintManagerUI::GetInstance(), this);
 	ASSERT(m_hWnd != NULL);
 	return m_hWnd;
