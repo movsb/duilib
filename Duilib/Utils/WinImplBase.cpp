@@ -108,6 +108,11 @@ LRESULT WindowImplBase::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 #if defined(WIN32) && !defined(UNDER_CE)
 LRESULT WindowImplBase::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	if (m_bFrameWnd){
+		bHandled = FALSE;
+		return 0;
+	}
+
 	bHandled = TRUE;
 	return 0;
 }
