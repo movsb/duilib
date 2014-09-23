@@ -2076,13 +2076,13 @@ void CRichEditUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
     if( _tcscmp(pstrName, _T("vscrollbar")) == 0 ) {
         if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_DISABLENOSCROLL | WS_VSCROLL;
     }
-    if( _tcscmp(pstrName, _T("autovscroll")) == 0 ) {
+    else if( _tcscmp(pstrName, _T("autovscroll")) == 0 ) {
         if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_AUTOVSCROLL;
     }
     else if( _tcscmp(pstrName, _T("hscrollbar")) == 0 ) {
         if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_DISABLENOSCROLL | WS_HSCROLL;
     }
-    if( _tcscmp(pstrName, _T("autohscroll")) == 0 ) {
+    else if( _tcscmp(pstrName, _T("autohscroll")) == 0 ) {
         if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_AUTOHSCROLL;
     }
     else if( _tcscmp(pstrName, _T("wanttab")) == 0 ) {
@@ -2107,15 +2107,15 @@ void CRichEditUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
         if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_PASSWORD;
     }
     else if( _tcscmp(pstrName, _T("align")) == 0 ) {
-        if( _tcsstr(pstrValue, _T("left")) != NULL ) {
+		if (_tcscmp(pstrValue, _T("left")) == 0) {
             m_lTwhStyle &= ~(ES_CENTER | ES_RIGHT);
             m_lTwhStyle |= ES_LEFT;
         }
-        if( _tcsstr(pstrValue, _T("center")) != NULL ) {
+		if (_tcscmp(pstrValue, _T("center")) == 0) {
             m_lTwhStyle &= ~(ES_LEFT | ES_RIGHT);
             m_lTwhStyle |= ES_CENTER;
         }
-        if( _tcsstr(pstrValue, _T("right")) != NULL ) {
+		if (_tcscmp(pstrValue, _T("right")) == 0) {
             m_lTwhStyle &= ~(ES_LEFT | ES_CENTER);
             m_lTwhStyle |= ES_RIGHT;
         }
