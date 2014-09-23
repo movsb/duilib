@@ -360,6 +360,7 @@ private:
     //
     CControlUI* m_pRoot;
     CControlUI* m_pFocus;
+	CControlUI* m_pLastFocus;
     CControlUI* m_pEventHover;
     CControlUI* m_pEventClick;
     CControlUI* m_pEventKey;

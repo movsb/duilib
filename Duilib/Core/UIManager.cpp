@@ -85,6 +85,7 @@ m_bShowUpdateRect(false),
 m_uTimerID(0x1000),
 m_pRoot(NULL),
 m_pFocus(NULL),
+m_pLastFocus(NULL),
 m_pEventHover(NULL),
 m_pEventClick(NULL),
 m_pEventKey(NULL),
@@ -1118,6 +1119,30 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
             pControl->Event(event);
         }
         return true;
+	case WM_ACTIVATE:
+		{
+			switch (LOWORD(wParam))
+			{
+			case WA_ACTIVE:
+				SetFocus(m_pLastFocus);
+				break;
+			case WA_CLICKACTIVE:
+			{
+				POINT pt = { 0 };
+				::GetCursorPos(&pt);
+				DWORD ht = SendMessage(m_hWndPaint, WM_NCHITTEST, 0, MAKELPARAM(pt.x, pt.y));
+				if (ht != HTCLIENT){
+					SetFocus(m_pLastFocus);
+				}
+				break;
+			}
+			case WA_INACTIVE:
+				m_pLastFocus = m_pFocus;
+				SetFocus(NULL);
+				break;
+			}
+			break;
+		}
     case WM_NOTIFY:
         {
             LPNMHDR lpNMHDR = (LPNMHDR) lParam;
@@ -1365,23 +1390,23 @@ void CPaintManagerUI::SetFocus(CControlUI* pControl)
 
 void CPaintManagerUI::SetFocusNeeded(CControlUI* pControl)
 {
-    ::SetFocus(m_hWndPaint);
-    if( pControl == NULL ) return;
-    if( m_pFocus != NULL ) {
-        TEventUI event = { 0 };
-        event.Type = UIEVENT_KILLFOCUS;
-        event.pSender = pControl;
-        event.dwTimestamp = ::GetTickCount();
-        m_pFocus->Event(event);
-        SendNotify(m_pFocus, DUI_MSGTYPE_KILLFOCUS);
-        m_pFocus = NULL;
-    }
-    FINDTABINFO info = { 0 };
-    info.pFocus = pControl;
-    info.bForward = false;
-    m_pFocus = m_pRoot->FindControl(__FindControlFromTab, &info, UIFIND_VISIBLE | UIFIND_ENABLED | UIFIND_ME_FIRST);
-    m_bFocusNeeded = true;
-    if( m_pRoot != NULL ) m_pRoot->NeedUpdate();
+//     ::SetFocus(m_hWndPaint);
+//     if( pControl == NULL ) return;
+//     if( m_pFocus != NULL ) {
+//         TEventUI event = { 0 };
+//         event.Type = UIEVENT_KILLFOCUS;
+//         event.pSender = pControl;
+//         event.dwTimestamp = ::GetTickCount();
+//         m_pFocus->Event(event);
+//         SendNotify(m_pFocus, DUI_MSGTYPE_KILLFOCUS);
+//         m_pFocus = NULL;
+//     }
+//     FINDTABINFO info = { 0 };
+//     info.pFocus = pControl;
+//     info.bForward = false;
+//     m_pFocus = m_pRoot->FindControl(__FindControlFromTab, &info, UIFIND_VISIBLE | UIFIND_ENABLED | UIFIND_ME_FIRST);
+//     m_bFocusNeeded = true;
+//     if( m_pRoot != NULL ) m_pRoot->NeedUpdate();
 }
 
 bool CPaintManagerUI::SetTimer(CControlUI* pControl, UINT nTimerID, UINT uElapse)
