@@ -307,11 +307,6 @@ UINT CWindowWnd::ShowModal()
     ::EnableWindow(hWndParent, FALSE);
     MSG msg = { 0 };
     while( ::IsWindow(m_hWnd) && ::GetMessage(&msg, NULL, 0, 0) ) {
-        if( msg.message == WM_CLOSE && msg.hwnd == m_hWnd ) {
-            nRet = msg.wParam;
-            ::EnableWindow(hWndParent, TRUE);
-            ::SetFocus(hWndParent);
-        }
         if( !CPaintManagerUI::TranslateMessage(&msg) ) {
             ::TranslateMessage(&msg);
             ::DispatchMessage(&msg);

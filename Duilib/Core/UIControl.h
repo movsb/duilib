@@ -25,6 +25,7 @@ public:
     virtual UINT GetControlFlags() const;
 
     virtual bool Activate();
+	virtual void Notifier(int evt, void* ud=0);
     virtual CPaintManagerUI* GetManager() const;
     virtual void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
     virtual CControlUI* GetParent() const;

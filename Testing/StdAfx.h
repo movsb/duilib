@@ -54,6 +54,8 @@
 
 #include <UIlib.h>
 #include <SysCtrls.h>
+#include <iostream>
+#include <string>
 
 #include <olectl.h>
 

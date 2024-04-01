@@ -1320,14 +1320,7 @@ void CPaintManagerUI::MessageLoop()
     while( ::GetMessage(&msg, NULL, 0, 0) ) {
         if( !CPaintManagerUI::TranslateMessage(&msg) ) {
             ::TranslateMessage(&msg);
-			try{
             ::DispatchMessage(&msg);
-			} catch(...) {
-				DUITRACE(_T("EXCEPTION: %s(%d)\n"), __FILET__, __LINE__);
-				#ifdef _DEBUG
-				throw "CPaintManagerUI::MessageLoop";
-				#endif
-			}
         }
     }
 }
@@ -1365,9 +1358,10 @@ void CPaintManagerUI::SetFocus(CControlUI* pControl)
     {
         TEventUI event = { 0 };
         event.Type = UIEVENT_KILLFOCUS;
-        event.pSender = pControl;
+        event.pSender = m_pFocus;
         event.dwTimestamp = ::GetTickCount();
         m_pFocus->Event(event);
+		ASSERT("PM:SetFocus:: " && m_pFocus != NULL);
         SendNotify(m_pFocus, DUI_MSGTYPE_KILLFOCUS);
         m_pFocus = NULL;
     }
@@ -1378,13 +1372,14 @@ void CPaintManagerUI::SetFocus(CControlUI* pControl)
         && pControl->IsVisible() 
         && pControl->IsEnabled() ) 
     {
-        m_pFocus = pControl;
+		ASSERT(pControl != NULL);
         TEventUI event = { 0 };
         event.Type = UIEVENT_SETFOCUS;
         event.pSender = pControl;
         event.dwTimestamp = ::GetTickCount();
-        m_pFocus->Event(event);
-        SendNotify(m_pFocus, DUI_MSGTYPE_SETFOCUS);
+        pControl->Event(event);
+        SendNotify(pControl, DUI_MSGTYPE_SETFOCUS);
+		m_pFocus = pControl;
     }
 }
 
@@ -1654,6 +1649,11 @@ void CPaintManagerUI::SendNotify(TNotifyUI& Msg, bool bAsync /*= false*/)
 	Msg.ptMouse = m_ptLastMousePos;
 	Msg.dwTimestamp = ::GetTickCount();
 
+	ASSERT(Msg.pSender != NULL);
+	if (Msg.pSender == NULL){
+		__asm int 3
+		MessageBox(NULL, "!!!!!!!!!!!!!", NULL, MB_ICONERROR);
+	}
 	if (CControlUI* pOwner = Msg.pSender->Owner()){
 		TEventUI evt = { 0 };
 		evt.Type = UIEVENT_CHILDEVENT;

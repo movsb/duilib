@@ -11,7 +11,6 @@ public:
 protected:
 	virtual CControlUI* CreateControl(LPCTSTR pstrClass) override
 	{
-		if(_tcscmp(pstrClass, _T("SysCombo")) == 0) return new CSysComboUI;
 		return nullptr;
 	}
 	virtual CDuiString GetSkinFolder() override
@@ -20,18 +19,23 @@ protected:
 	}
 	virtual CDuiString GetSkinFile() override
 	{
-		return _T("MainWindow.xml");
+		return _T("test1.xml");
 	}
 	virtual LPCTSTR GetWindowClassName(void) const override
 	{
-		return _T("女孩不哭");
+		return _T("9078");
 	}
 
 	virtual void InitWindow() override
 	{
 
-
 	}
+	virtual LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+	{
+		bHandled = FALSE;
+		return 0;
+	}
+
 	virtual void OnFinalMessage( HWND hWnd ) override
 	{
 		__super::OnFinalMessage(hWnd);
@@ -41,9 +45,12 @@ protected:
 
 	virtual void Notify(TNotifyUI& msg) override
 	{
-		if(msg.sType == DUI_MSGTYPE_CLICK){
-			SendMessage(WM_SYSCOMMAND,SC_MINIMIZE);
+		if (msg.pSender->GetName() == "btn1"){
+			if (msg.sType == "click"){
+				MessageBox(m_hWnd, "", "", 0);
+			}
 		}
+		__super::Notify(msg);
 	}
 
 
@@ -59,10 +66,10 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	freopen("CONOUT$","w",stdout);
 	freopen("CONOUT$","w",stdout);
 	CPaintManagerUI::SetInstance(hInstance);
-	//CPaintManagerUI::LoadPlugin(SYSCTRL_DLL_NAME);
-
+	CPaintManagerUI::StartupGdiPlus();
+	CPaintManagerUI::LoadPlugin(SYSCTRL_DLL_NAME);
 	CMainWindow* dlg = new CMainWindow();
-	dlg->CreateDuiWindow(nullptr, _T("女孩不哭"), WS_OVERLAPPEDWINDOW|WS_SIZEBOX);
+	dlg->Create(NULL,"fffffffffff",UI_WNDSTYLE_FRAME);
 	dlg->CenterWindow();
 	dlg->ShowModal();
 

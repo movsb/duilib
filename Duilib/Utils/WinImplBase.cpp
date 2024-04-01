@@ -114,7 +114,11 @@ LRESULT WindowImplBase::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	}
 
 	bHandled = TRUE;
-	return 0;
+
+	// Important!!!
+	// 注意要返回TRUE, 否则会导致:
+	// 新开的子窗口无法被激活
+	return TRUE;
 }
 
 LRESULT WindowImplBase::OnNcCalcSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)

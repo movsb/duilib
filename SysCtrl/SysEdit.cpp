@@ -152,7 +152,6 @@ defproc:
 		m_pInit = new CSysEditInit;
 		m_dwBackColor = 0xFFFFFFFF;
 		m_dwTextColor = 0x00000000;
-		m_bMenuUsed = true;
 		m_bWantTab = true;
 	}
 
@@ -175,14 +174,13 @@ defproc:
 	LPVOID CSysEditUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcscmp(pstrName, SYSCTRL_EDIT) == 0 ) return static_cast<CSysEditUI*>(this);
-		else if(_tcscmp(pstrName, _T("HWND"))==0) return m_pWindow->GetHWND();
 		else return __super::GetInterface(pstrName);
 	}
 
 	UINT CSysEditUI::GetControlFlags() const
 	{
 		if( !IsEnabled() ) return CControlUI::GetControlFlags();
-		return UIFLAG_TABSTOP;
+		return UIFLAG_TABSTOP | UIFLAG_HASHWND;
 	}
 
 	HWND CSysEditUI::GetHWND() const
@@ -469,8 +467,6 @@ defproc:
 
 	bool CSysEditUI::ContextMenuHandler(const CPoint& pt)
 	{
-		if(!IsContextMenuUsed())
-			return true;
 		if(m_bUseDefMenu)
 			return false;
 		// send to wnd

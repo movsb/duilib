@@ -70,12 +70,9 @@ void CComboWnd::Init(CComboUI* pOwner)
         ::MapWindowRect(pOwner->GetManager()->GetPaintWindow(), HWND_DESKTOP, &rc);
     }
     
-    Create(pOwner->GetManager()->GetPaintWindow(), NULL, WS_POPUP, WS_EX_TOOLWINDOW, rc);
-    // HACK: Don't deselect the parent's caption
-    HWND hWndParent = m_hWnd;
-    while( ::GetParent(hWndParent) != NULL ) hWndParent = ::GetParent(hWndParent);
-    ::ShowWindow(m_hWnd, SW_SHOW);
-    ::SendMessage(hWndParent, WM_NCACTIVATE, TRUE, 0L);
+    Create(pOwner->GetManager()->GetPaintWindow(), NULL, WS_POPUP|WS_CHILD, WS_EX_TOOLWINDOW, rc);
+	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE|SWP_SHOWWINDOW);
+	//::ShowWindow(m_hWnd, SW_SHOWNOACTIVATE);
 }
 
 LPCTSTR CComboWnd::GetWindowClassName() const
@@ -162,7 +159,11 @@ LRESULT CComboWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
     else if( uMsg == WM_KILLFOCUS ) {
         if( m_hWnd != (HWND) wParam ) PostMessage(WM_CLOSE);
+		return 0;
     }
+	else if (uMsg == WM_ACTIVATE){
+		//MessageBox(m_hWnd, "", "", 0);
+	}
 
     LRESULT lRes = 0;
     if( m_pm.MessageHandler(uMsg, wParam, lParam, lRes) ) return lRes;
@@ -394,7 +395,7 @@ void CComboUI::DoEvent(TEventUI& event)
 
     if( event.Type == UIEVENT_SETFOCUS ) 
     {
-        Invalidate();
+       // Invalidate();
     }
     if( event.Type == UIEVENT_KILLFOCUS ) 
     {
@@ -403,7 +404,9 @@ void CComboUI::DoEvent(TEventUI& event)
     if( event.Type == UIEVENT_BUTTONDOWN )
     {
         if( IsEnabled() ) {
-            Activate();
+			m_pWindow = new CComboWnd();
+			ASSERT(m_pWindow);
+			m_pWindow->Init(this);
             m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
         }
         return;
@@ -484,12 +487,12 @@ SIZE CComboUI::EstimateSize(SIZE szAvailable)
 
 bool CComboUI::Activate()
 {
-    if( !CControlUI::Activate() ) return false;
-    if( m_pWindow ) return true;
-    m_pWindow = new CComboWnd();
-    ASSERT(m_pWindow);
-    m_pWindow->Init(this);
-    if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_DROPDOWN);
+//     if( !CControlUI::Activate() ) return false;
+//     if( m_pWindow ) return true;
+//     m_pWindow = new CComboWnd();
+//     ASSERT(m_pWindow);
+//     m_pWindow->Init(this);
+//     if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_DROPDOWN);
     Invalidate();
     return true;
 }

@@ -15,9 +15,9 @@ namespace DuiLib
 		static LPCTSTR GetClassStatic(){ return _T("Option"); }
 		LPVOID GetInterface(LPCTSTR pstrName);
 
+		void DoEvent(TEventUI& event);
 		void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
 
-		bool Activate();
 		void SetEnabled(bool bEnable = true);
 
 		LPCTSTR GetSelectedImage();

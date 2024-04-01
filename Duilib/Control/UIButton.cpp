@@ -30,6 +30,14 @@ namespace DuiLib
 		return (IsKeyboardEnabled() ? UIFLAG_TABSTOP : 0) | (IsEnabled() ?  GetHandCursor() ? UIFLAG_SETCURSOR : 0 : 0);
 	}
 
+	void CButtonUI::Notifier(int evt, void* ud)
+	{
+		if (evt == UIEVENT_KEYUP){
+			GetManager()->SendNotify(this, DUI_MSGTYPE_CLICK);
+		}
+
+	}
+
 	void CButtonUI::DoEvent(TEventUI& event)
 	{
 		if (!CControlUI::Activate()
@@ -46,7 +54,7 @@ namespace DuiLib
 		{
 			if (IsKeyboardEnabled()) {
 				if( event.chKey == VK_SPACE || event.chKey == VK_RETURN ) {
-					GetManager()->SendNotify(this, DUI_MSGTYPE_CLICK);
+					Notifier(event.Type);
 					return;
 				}
 			}
@@ -236,7 +244,7 @@ namespace DuiLib
 
 	SIZE CButtonUI::EstimateSize(SIZE szAvailable)
 	{
-		if( m_cxyFixed.cy == 0 ) return CSize(m_cxyFixed.cx, m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 8);
+		//if( m_cxyFixed.cy == 0 ) return CSize(m_cxyFixed.cx, m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 8);
 		return CControlUI::EstimateSize(szAvailable);
 	}
 
@@ -393,5 +401,4 @@ Label_ForeImage:
 	{
 		return m_bHand;
 	}
-
 }

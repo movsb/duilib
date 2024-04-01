@@ -17,6 +17,7 @@ namespace DuiLib
 
 		void SetEnabled(bool bEnable = true);
 		void DoEvent(TEventUI& event);
+		void Notifier(int evt, void* ud=0);
 
 		LPCTSTR GetNormalImage();
 		void SetNormalImage(LPCTSTR pStrImage);

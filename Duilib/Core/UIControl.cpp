@@ -1094,4 +1094,9 @@ void CControlUI::SetBorderStyle( int nStyle )
 	Invalidate();
 }
 
+void CControlUI::Notifier(int evt, void* ud)
+{
+
+}
+
 } // namespace DuiLib

@@ -91,15 +91,6 @@ namespace DuiLib
 		Invalidate();
 	}
 
-	bool COptionUI::Activate()
-	{
-		if( !CButtonUI::Activate() ) return false;
-		if( !m_sGroupName.IsEmpty() ) Selected(true);
-		else Selected(!m_bSelected);
-
-		return true;
-	}
-
 	void COptionUI::SetEnabled(bool bEnable)
 	{
 		CControlUI::SetEnabled(bEnable);
@@ -282,4 +273,37 @@ Label_ForeImage:
 		else
 			CButtonUI::PaintText(hDC);
 	}
+
+	void COptionUI::DoEvent(TEventUI& event)
+	{
+		if (!CControlUI::Activate()
+			&& event.Type != UIEVENT_LOSTCAPTURE)
+		{
+			CButtonUI::DoEvent(event);
+			return;
+		}
+
+		if (event.Type == UIEVENT_BUTTONUP){
+			if (IsSelected()) return;
+
+			BOOL bEnableChange = TRUE;
+			TNotifyUI msg;
+			msg.pSender = this;
+			msg.sType = DUI_MSGTYPE_SELECTCHANGING;
+			msg.wParam = WPARAM(&bEnableChange);
+			msg.lParam = 0;
+			GetManager()->SendNotify(msg);
+			if (bEnableChange){
+				Selected(true);
+			}
+			return;
+		}
+		else if (event.Type == UIEVENT_CONTEXTMENU){
+			return GetManager()->SendNotify(this, DUI_MSGTYPE_MENU);
+		}
+
+
+		CButtonUI::DoEvent(event);
+	}
+
 }
